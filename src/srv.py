@@ -24,7 +24,7 @@ class MyHandler(SimpleHTTPRequestHandler):
                 msg = f"""
                         Hello {name}!
                                         
-                        You was born in {born} year                    
+                        You were born in {born} year                    
                                             
                         Your path: {path}
                                """
