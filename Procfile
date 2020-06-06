@@ -1,1 +1,1 @@
-web: python -m srv.py runserver
+web: python -m srv.py
