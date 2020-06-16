@@ -18,7 +18,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         path = self.path_calculating()
         handlers = {
             "/hello": self.hello_response,
-            "/goodbye": self.goodbye_response
+            "/hello/": self.hello_response,
+            "/goodbye": self.goodbye_response,
+            "/goodbye/": self.goodbye_response
         }
         handler = handlers.get(path, super().do_GET)
         handler()
@@ -34,7 +36,7 @@ class MyHandler(SimpleHTTPRequestHandler):
                                     Your path: {path}
 
                                                        """
-        if 'age':
+        if age:
             born = year - age
             msg += f"\n\t\t\t\t   You were born in {born}"
 
