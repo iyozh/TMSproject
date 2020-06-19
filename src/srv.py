@@ -18,9 +18,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         path = self.path_calculating()
         handlers = {
             "/hello": self.hello_response,
-            "/hello/": self.hello_response,
-            "/goodbye": self.goodbye_response,
-            "/goodbye/": self.goodbye_response
+            "/goodbye": self.goodbye_response
         }
         handler = handlers.get(path, super().do_GET)
         handler()
@@ -53,7 +51,10 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.response(msg)
 
     def path_calculating(self):
-        return self.path.split("?")[0]
+        path = self.path.split("?")[0]
+        if path[-1] == '/':
+            path = path[:-1]
+        return path
 
     def name_calculating(self, qs_arguments: Dict):
         return qs_arguments.get('name', 'anonymous')

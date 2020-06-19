@@ -1,0 +1,317 @@
+body{
+    font-family: 'Roboto', sans-serif;
+	margin: 0;
+	color: #161616;
+	
+}
+.container{
+    width: 1170px;
+    /* background-color: rgb(5, 255, 138); */
+    margin-left: auto;
+    margin-right: auto;
+}
+.site-heading{
+	margin: 0;
+	color: #161616;
+	font-size: 42px;
+	font-weight: 700;	
+	letter-spacing: 0.5px;
+	 margin-bottom: 62px; 
+}
+.slogan{
+	color: #161616;
+	font-family: Roboto;
+	font-size: 36px;
+	font-weight: 300;
+	letter-spacing: 0.43px;
+	margin-bottom: 24px;
+}
+.slogan p{
+	margin: 0;
+}
+.social-icons a{
+	margin-right: 20px;
+	text-decoration: none;
+}
+.header{
+	/* background-color: rgb(20, 213, 220); */
+	padding-top: 75px;
+	padding-bottom: 70px;
+}
+.about-me{
+	background-color: #e3f0f7;
+	padding-top: 80px;
+	padding-bottom: 80px;
+}
+.about-me-text{
+	/* background-color: darkmagenta; */
+	width: 470px;
+}
+.about-me-text p {
+/* Style for "Верстаю и" */
+
+	color: #161616;
+	font-size: 28px;
+	font-weight: 300;
+	line-height: 45px;
+	letter-spacing: 0.34px;
+}
+.about-me-photo{
+	/* background-color: darkorange; */
+
+}
+.row-space{
+	display: flex;
+	justify-content: space-between;
+}
+.title-2{
+/* Style for "Обо мне" */
+
+	color: #161616;
+	font-family: Roboto;
+	font-size: 40px;
+	letter-spacing: 0.48px;
+}
+.title-3{
+/* Style for "Что я умею" */
+	color: #161616;
+	font-size: 28px;
+	line-height: 1.61;
+	font-weight: 700;
+	letter-spacing: 0.34px;
+}
+	.about-me-text ul{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	font-weight: 300;
+	font-size: 28px;
+}
+.about-me-text li{
+	margin-bottom: 10px;
+}
+.about-me-text li:before{
+	content: "—";
+}
+.portfolio {
+	padding-top: 75px;
+	padding-bottom: 50px;
+}
+.portfolio-header{
+	text-align: center;
+	margin-bottom: 80px;
+}
+.title-2-text-center {
+	text-align: center;
+	font-weight: 700;
+	font-size: 40px;
+}
+.cards-wrapper{
+	text-align: center;
+}
+.card{
+	margin-bottom: 130px;
+
+}
+.card:last-child, .card:nth-last-child(2){
+	margin-bottom: 0;
+}
+.card-img{
+	margin-bottom: 25px;
+}
+.card-title{
+	/* Style for "Название п" */
+	margin: 0;
+	margin-bottom: 15px;
+	color: #161616;
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 45px;
+	letter-spacing: 0.41px;
+}
+.card-desc{
+	/* Style for "Создание в" */
+	margin-bottom: 20px;
+	color: #161616;
+	font-size: 28px;
+	font-weight: 300;
+	line-height: 1.3;
+	letter-spacing: 0.34px;
+}
+.card-link{
+	/* Style for "Ссылка на" */
+
+	color: #969696;
+	font-style: italic;
+	font-size: 16px;
+	font-weight: 300;
+	/* Text style for "С, сылка н" */
+	letter-spacing: 0.19px;
+}
+.footer{
+	padding-bottom: 95px;
+	padding-top: 50px;
+
+}
+.cta {
+	
+
+	font-size: 36px;
+	font-weight: 100;
+	letter-spacing: 0.5px;
+}
+.cta strong {
+	display: block;
+	margin-bottom: 30px;
+	font-size: 42px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+}
+.cta a{
+	text-decoration: underline;
+	color: #4298e8;
+}
+/* ----------------------INNER PAGE ----------------*/
+.header-inner {
+	background-color: #e3f0f7;
+	padding-top: 50px;
+	padding-bottom: 55px;
+}
+.logo{
+
+}
+.inner-logo{
+	margin: 0;
+	margin-bottom: 10px;
+	color: #161616;
+	font-size: 32px;
+	font-weight: 700;
+	letter-spacing: 0.38px;
+}
+.inner-slogan{
+	margin: 0;
+	color: #161616;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: 0.26px;
+}
+.row-space-between{
+	display: flex;
+	justify-content: space-between;
+}
+.project{
+	padding-top: 100px;
+	padding-bottom: 50px;
+}
+.project-title{
+	margin: 0;
+	margin-bottom:25px;
+	font-size: 40px;
+	font-weight: 700;
+	letter-spacing: 0.48px;
+	text-align: center;
+}
+.badge-wrapper{
+	text-align: center;
+	margin-bottom: 35px;
+}
+.badge{
+	padding: 0 10px;
+	height: 26px;
+	background-color: darkseagreen;
+	display: inline-block;
+	line-height: 26px;
+	margin-right: 10px;
+	font-size: 14px;
+	font-weight: 700;
+	color: #ffffff;
+}
+.badge-html{
+	background-color: #ff861a;
+}
+.badge-css{
+	background-color: #039be5;
+}
+.badge-bootstrap{
+	background-color: #a062c7;
+	margin-right: 0;
+}
+.project-description{
+	margin: 0 auto;
+	text-align: center;
+	width: 565px;
+	font-size: 22px;
+	font-weight: 300;
+	line-height: 32px;
+	letter-spacing: 0.26px;
+	margin-bottom:30px;
+}
+.project-demo-link{
+	color: #039be5;
+	font-size: 22px;
+	font-weight: 300;
+	line-height: 32px;
+	text-decoration: underline;
+	text-align: center;
+	letter-spacing: 0.26px;
+	margin-bottom:50px;
+}
+.project-image{
+	text-align: center;
+	margin-bottom:53px;
+}
+.project-image img{
+	box-shadow: 20px 20px 100px rgba(196, 219, 233, 0.5);
+}
+.navigation{
+	margin-bottom:75px;
+}
+.navigation-button {
+	color: #039be5;
+	font-size: 22px;
+	font-weight: 300;
+	line-height: 32px;
+	letter-spacing: 0.26px;
+	width:calc(50% - 5px);
+	/* width: 50%; */
+	text-align: center;
+	line-height:80px;
+	height: 80px;
+	border: 1px solid #d2ebf7;
+	text-decoration: none;
+	transition: border-color 0.2s ease, color 0.2s ease;
+	
+}
+.row-space-btw{
+	justify-content: space-between;
+	display: flex;
+}
+.navigation-button:hover{
+	border-color: #ff861a;
+	color: #ff861a;
+
+}
+.footer-c{
+	margin-bottom: 80px;
+	text-align: center;
+
+}
+.cta {
+	
+
+	font-size: 36px;
+	font-weight: 100;
+	letter-spacing: 0.5px;
+}
+.cta strong {
+	display: block;
+	margin-bottom: 30px;
+	font-size: 42px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+}
+.cta a{
+	text-decoration: underline;
+	color: #4298e8;
+}
+	
