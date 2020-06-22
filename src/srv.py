@@ -1,9 +1,16 @@
-import socketserver
 import os
+import socketserver
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler
-from urllib.parse import parse_qs
 from typing import Dict
+from urllib.parse import parse_qs
+from pathlib import Path
+
+PROJECT_DIR = Path(__file__).parent.parent.resolve()
+print(f"PROJECT_DIR = {PROJECT_DIR}")
+
+PORTFOLIO = PROJECT_DIR / "portfolio"
+print(f"PORTFOLIO = {PORTFOLIO}")
 
 year = datetime.now().year
 hour = datetime.now().hour
@@ -13,13 +20,13 @@ print(f"PORT = {PORT}")
 
 
 class MyHandler(SimpleHTTPRequestHandler):
-
     def do_GET(self):
         path = self.path_calculating()
-        handlers = {
-            "/hello": self.hello_response,
-            "/goodbye": self.goodbye_response
-        }
+        handlers = {"/hello": self.hello_response,
+                    "/goodbye": self.goodbye_response,
+                    "/aboutme": self.aboutme_response,
+                    "/projects":self.projects_response
+                    }
         handler = handlers.get(path, super().do_GET)
         handler()
 
@@ -50,17 +57,33 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         self.response(msg)
 
+    def aboutme_response(self):
+        file_name = PORTFOLIO / "aboutme" / "index.html"
+        content = self.get_content(file_name)
+        self.response(content, "text/html")
+
+    def projects_response(self):
+        file_name = PORTFOLIO / "projects" / "index.html"
+        content = self.get_content(file_name)
+        self.response(content, "text/html")
+
+    def get_content(self, file_name: Path):
+        with file_name.open("r") as project_file:
+            content = project_file.read()
+
+        return content
+
     def path_calculating(self):
         path = self.path.split("?")[0]
-        if path[-1] == '/':
+        if path[-1] == "/":
             path = path[:-1]
         return path
 
     def name_calculating(self, qs_arguments: Dict):
-        return qs_arguments.get('name', 'anonymous')
+        return qs_arguments.get("name", "anonymous")
 
     def age_calculating(self, qs_arguments: Dict):
-        return int(qs_arguments.get('age', 0))
+        return int(qs_arguments.get("age", 0))
 
     def parse_function(self):
         _path, *qs = self.path.split("?")
@@ -79,10 +102,10 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         return arguments
 
-    def response(self, msg):
+    def response(self, msg, content_type="text/plain"):
         self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.send_header("Content-length", len(msg))
+        self.send_header("Content-type", content_type)
+        self.send_header("Content-length", str(len(msg)))
         self.end_headers()
 
         self.wfile.write(msg.encode())
