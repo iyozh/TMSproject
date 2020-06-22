@@ -19,16 +19,25 @@ PORT = int(os.getenv("PORT", 8000))
 print(f"PORT = {PORT}")
 
 
+class NotFound(Exception):
+    ...
+
+
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         path = self.path_calculating()
         handlers = {"/hello": self.hello_response,
                     "/goodbye": self.goodbye_response,
                     "/aboutme": self.aboutme_response,
-                    "/projects":self.projects_response
+                    "/projects": self.projects_response,
+                    "/education": self.education_response
                     }
         handler = handlers.get(path, super().do_GET)
-        handler()
+        try:
+            handler()
+        except NotFound:
+            msg = "Oops!Nothing found, my friend!"
+            self.response(msg, 404)
 
     def hello_response(self):
         arguments = self.parse_function()
@@ -57,6 +66,11 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         self.response(msg)
 
+    def education_response(self):
+        file_name = PORTFOLIO / "education" / "index1.html"
+        content = self.get_content(file_name)
+        self.response(content, "text/html")
+
     def aboutme_response(self):
         file_name = PORTFOLIO / "aboutme" / "index.html"
         content = self.get_content(file_name)
@@ -68,6 +82,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.response(content, "text/html")
 
     def get_content(self, file_name: Path):
+        if not file_name.is_file():
+            raise NotFound()
+
         with file_name.open("r") as project_file:
             content = project_file.read()
 
@@ -102,8 +119,8 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         return arguments
 
-    def response(self, msg, content_type="text/plain"):
-        self.send_response(200)
+    def response(self, msg, status_code=200, content_type="text/plain"):
+        self.send_response(status_code)
         self.send_header("Content-type", content_type)
         self.send_header("Content-length", str(len(msg)))
         self.end_headers()
