@@ -36,8 +36,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         try:
             handler()
         except NotFound:
-            msg = "Oops!Nothing found, my friend!"
-            self.response(msg, 404)
+            file_name = PROJECT_DIR / "images" / "error404.jpg"
+            content = self.get_content(file_name)
+            self.response(content, status_code=404, content_type="image/jpeg")
 
     def hello_response(self):
         arguments = self.parse_function()
@@ -69,23 +70,23 @@ class MyHandler(SimpleHTTPRequestHandler):
     def education_response(self):
         file_name = PORTFOLIO / "education" / "index1.html"
         content = self.get_content(file_name)
-        self.response(content, "text/html")
+        self.response(content, content_type="text/html")
 
     def aboutme_response(self):
         file_name = PORTFOLIO / "aboutme" / "index.html"
         content = self.get_content(file_name)
-        self.response(content, "text/html")
+        self.response(content, content_type="text/html")
 
     def projects_response(self):
         file_name = PORTFOLIO / "projects" / "index.html"
         content = self.get_content(file_name)
-        self.response(content, "text/html")
+        self.response(content, content_type="text/html")
 
     def get_content(self, file_name: Path):
         if not file_name.is_file():
             raise NotFound()
 
-        with file_name.open("r") as project_file:
+        with file_name.open("rb") as project_file:
             content = project_file.read()
 
         return content
