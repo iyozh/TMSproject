@@ -126,8 +126,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.send_header("Content-length", str(len(msg)))
         self.end_headers()
 
-        self.wfile.write(msg.encode())
-
+        if isinstance(msg, str):
+            self.wfile.write(msg.encode())
+        self.wfile.write(msg)
 
 with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
     print("it works")
