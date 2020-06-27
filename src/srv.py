@@ -36,7 +36,7 @@ class MyHandler(SimpleHTTPRequestHandler):
             self.do()
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
-            content = self.get_content(file_name)
+            content = self.get_picture(file_name)
             self.response(content, status_code=404, content_type="image/jpeg")
     #
     # def do_POST(self):
@@ -198,6 +198,14 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         return content
 
+    def get_picture(self, file_name: Path):
+        if not file_name.is_file():
+            raise NotFound()
+
+        with file_name.open("rb") as project_file:
+            content = project_file.read()
+
+        return content
     def save_data(self, arguments) -> None:
         with COUNTER.open("w") as fp:
             json.dump(arguments, fp)
