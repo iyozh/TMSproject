@@ -64,7 +64,7 @@ class MyHandler(SimpleHTTPRequestHandler):
             handler()
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
-            content = self.get_content(file_name)
+            content = self.get_picture(file_name)
             self.response(content, status_code=404, content_type="image/jpeg")
     #
     # def choose_theme(self):
