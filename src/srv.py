@@ -32,12 +32,7 @@ class NotFound(Exception):
 
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        try:
-            self.do()
-        except NotFound:
-            file_name = PROJECT_DIR / "images" / "error404.jpg"
-            content = self.get_picture(file_name)
-            self.response(content, status_code=404, content_type="image/jpeg")
+        self.do()
     #
     # def do_POST(self):
     #     try:
@@ -58,8 +53,6 @@ class MyHandler(SimpleHTTPRequestHandler):
             "/counter": self.counter_response,
         }
         handler = handlers.get(path, super().do_GET)
-        if path not in handlers:
-            raise NotFound()
         try:
             handler()
         except NotFound:
@@ -202,8 +195,8 @@ class MyHandler(SimpleHTTPRequestHandler):
         if not file_name.is_file():
             raise NotFound()
 
-        with file_name.open("rb") as project_file:
-            content = project_file.read()
+        with file_name.open("rb") as picture:
+            content = picture.read()
 
         return content
     def save_data(self, arguments) -> None:
