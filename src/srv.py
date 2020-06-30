@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Dict
 from urllib.parse import parse_qs
 
+
 PROJECT_DIR = Path(__file__).parent.parent.resolve()
 print(f"PROJECT_DIR = {PROJECT_DIR}")
 
@@ -15,10 +16,13 @@ print(f"PORTFOLIO = {PORTFOLIO}")
 
 EDUCATION = PORTFOLIO / "education" / "education.json"
 
-COUNTER = PROJECT_DIR / "counters.json"
+COUNTER = PROJECT_DIR / "data" / "counters.json"
 
-THEME = PROJECT_DIR / "theme.json"
+THEME = PROJECT_DIR / "data" / "theme.json"
 
+THEME_INDEX = PORTFOLIO / "theme" / "index.html"
+
+SESSION = PROJECT_DIR / "data" / "session.json"
 year = datetime.now().year
 hour = datetime.now().hour
 
@@ -32,76 +36,83 @@ class NotFound(Exception):
 
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        self.do()
-    #
-    # def do_POST(self):
-    #     try:
-    #         self.do('post')
-    #     except NotFound:
-    #         file_name = PROJECT_DIR / "images" / "error404.jpg"
-    #         content = self.get_content(file_name)
-    #         self.response(content, status_code=404, content_type="image/jpeg")
+        try:
+            self.do('get')
+        except NotFound:
+            file_name = PROJECT_DIR / "images" / "error404.jpg"
+            image = self.get_picture(file_name)
+            self.respond_404(image, "image/jpeg")
 
-    def do(self):
+    def do_POST(self):
+        try:
+            self.do('post')
+        except NotFound:
+            file_name = PROJECT_DIR / "images" / "error404.jpg"
+            image = self.get_picture(file_name)
+            self.respond_404(image, "image/jpeg")
+
+    def do(self, method: str):
         path = self.path_calculating()
         handlers = {
-            "/hello": self.hello_response,
+            "/hello": self.handler_hello,
             "/goodbye": self.goodbye_response,
             "/aboutme": self.aboutme_response,
             "/projects": self.projects_response,
             "/education": self.education_response,
+            "/theme": self.theme_handler,
             "/counter": self.counter_response,
+            "": super().do_GET
         }
-        handler = handlers.get(path, super().do_GET)
+        if path not in handlers:
+            raise NotFound()
+
+        handler = handlers.get(path)
+
         try:
-            handler()
+            handler(method, path)
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
-            content = self.get_picture(file_name)
-            self.response(content, status_code=404, content_type="image/jpeg")
-    #
-    # def choose_theme(self):
-    #     path = self.path_calculating()
-    #     switcher = {
-    #         "/black_theme": self.black_theme
-    #     }
-    #     switcher = switcher[path]
-    #     switcher()
-    #
-    # def black_theme(self):
-    #     arguments = self.get_json(THEME)
-    #     file_name = PORTFOLIO / "stats" / "index.html"
-    #     black_theme = arguments["black_theme"]
-    #     content = self.get_content(file_name).format(black_theme=black_theme)
-    #     self.response(content, content_type="text/html")
+            image = self.get_picture(file_name)
+            self.respond_404(image, "image/jpeg")
+
+    def handler_hello(self, method: str, path):
+        self.visits_counter(path)
+        switcher = {
+            'get': self.hello_GETresponse,
+            'post': self.hello_POSTresponse
+        }
+        switcher = switcher[method]
+        switcher(path)
 
 
-    def hello_response(self):
-        self.visits_counter()
-        arguments = self.parse_function()
-        path = self.path_calculating()
-        name = self.name_calculating(arguments)
-        age = self.age_calculating(arguments)
-        msg = f"""
-                                    Hello {name}!                
-
-                                    Your path: {path}
-
-                                                       """
+    def hello_GETresponse(self,path):
+        sessions = self.get_json(SESSION) or self.parse_function()
+        print(sessions)
+        name = self.name_calculating(sessions)
+        age = self.age_calculating(sessions)
+        print(name, age)
+        born = None
         if age:
             born = year - age
-            msg += f"\n\t\t\t\t   You were born in {born}"
 
-        self.response(msg)
+        html_content = PROJECT_DIR / "hello" / "hello.html"
 
-    def visits_counter(self):
-        arguments = self.get_json(COUNTER)
-        path = self.path_calculating()
-        arguments[path] = arguments[path] + 1
-        self.save_data(arguments)
+        hello_page = self.get_content(html_content).format(name=name, year=born)
+        self.respond_200(hello_page, "text/html")
 
-    def goodbye_response(self):
-        self.visits_counter()
+    def hello_POSTresponse(self,path):
+        form = self.parse_user_sessions()
+        session = self.get_json(SESSION)
+        print(session, form)
+        session.update(form)
+        print(session)
+        self.save_data(SESSION, session)
+        self.respond_302("/hello")
+
+
+
+    def goodbye_response(self,method,path):
+        self.visits_counter(path)
         if hour in range(6, 11):
             msg = f"\n\t\t\t\t   Good morning!"
         elif hour in range(12, 24):
@@ -109,44 +120,85 @@ class MyHandler(SimpleHTTPRequestHandler):
         else:
             msg = f"\n\t\t\t\t   Good night!"
 
-        self.response(msg)
+        self.respond_200(msg,"text/plain")
 
-    def education_response(self):
-        arguments = self.get_json(EDUCATION)
-        univer = arguments["univer"]
-        major = arguments["major"]
-        qualification = arguments["qualification"]
-        start = arguments["start"]
-        end = arguments["end"]
 
-        msg = f"""                          EDUCATION:{univer}
-                          Major:{major}
-                          Qualification:{qualification}
-                          Start:{start}
-                          End:{end}
-               """
+    def theme_handler(self,method, path):
+        self.visits_counter(path)
+        switcher = {
+            'get': self.theme_GETresponse,
+            'post': self.theme_POSTresponse
+        }
+        switcher = switcher[method]
+        switcher(path)
 
-        self.response(msg)
+    def theme_GETresponse(self,path):
+        theme = self.get_json(THEME)
+        theme_page = self.get_content(THEME_INDEX).format(**theme)
+        self.respond_200(theme_page, "text/html")
 
-    def counter_response(self):
-        arguments = self.get_json(COUNTER)
-        hello = arguments["/hello"]
-        goodbye = arguments["/goodbye"]
+    def theme_POSTresponse(self, path):
+        theme = self.get_json(THEME)
+        theme["background_color"], theme["text_color"] = theme["text_color"], theme["background_color"]
+        print(theme)
+        self.save_data(THEME, theme)
+        self.respond_302("/theme")
+
+    def counter_response(self,method,path):
+        self.visits_counter(path)
+        counts = self.get_json(COUNTER)
         file_name = PORTFOLIO / "stats" / "index.html"
-        content = self.get_content(file_name).format(greetings=hello, partings=goodbye)
-        self.response(content, content_type="text/html")
-        # if method == 'post':
-        #     self.choose_theme()
+        content = self.get_content(file_name).format(**counts)
+        self.respond_200(content, "text/html")
 
-    def aboutme_response(self):
+    def aboutme_response(self,method,path):
+        self.visits_counter(path)
         file_name = PORTFOLIO / "aboutme" / "index.html"
         content = self.get_content(file_name)
-        self.response(content, content_type="text/html")
+        self.respond_200(content, "text/html")
 
-    def projects_response(self):
+    def education_response(self,method,path):
+        self.visits_counter(path)
+        edu_info = self.get_json(EDUCATION)
+        file_name = PORTFOLIO / "education" / "index.html"
+        content = self.get_content(file_name).format(**edu_info)
+        self.respond_200(content, "text/html")
+
+    def projects_response(self,method,path):
+        self.visits_counter(path)
         file_name = PORTFOLIO / "projects" / "index.html"
         content = self.get_content(file_name)
-        self.response(content, content_type="text/html")
+        self.respond_200(content, "text/html")
+
+    def parse_user_sessions(self) -> Dict[str, str]:
+        content_length = int(self.headers["Content-Length"])
+        data = self.rfile.read(content_length)
+        payload = data.decode()
+        qs = parse_qs(payload)
+        user_data = {}
+        for key, values in qs.items():
+            if not values:
+                continue
+            user_data[key] = values[0]
+        return user_data
+
+    def get_request_payload(self) -> str:
+        try:
+            content_length = int(self.headers[("content-length")])
+            payload = self.rfile.read(content_length)
+        except (KeyError, ValueError):
+            payload = ""
+        print(payload.decode())
+        return payload.decode()
+
+    def visits_counter(self, path):
+        arguments = self.get_json(COUNTER)
+        if path not in arguments:
+            arguments[path] = 1
+        else:
+            arguments[path] = arguments[path] + 1
+        print(arguments)
+        self.save_data(COUNTER, arguments)
 
     def path_calculating(self):
         path = self.path.split("?")[0]
@@ -178,16 +230,18 @@ class MyHandler(SimpleHTTPRequestHandler):
         return arguments
 
     def get_json(self, file_info):
-        with file_info.open("r") as fp:
-            arguments = json.load(fp)
-        return arguments
+        try:
+            with file_info.open("r", encoding="utf-8") as usf:
+                return json.load(usf)  # what does load?
+        except (json.JSONDecodeError, FileNotFoundError):
+            return {}
 
     def get_content(self, file_name: Path):
         if not file_name.is_file():
             raise NotFound()
 
-        with file_name.open("r") as project_file:
-            content = project_file.read()
+        with file_name.open("r") as fp:
+            content = fp.read()
 
         return content
 
@@ -196,22 +250,35 @@ class MyHandler(SimpleHTTPRequestHandler):
             raise NotFound()
 
         with file_name.open("rb") as picture:
-            content = picture.read()
+            image = picture.read()
 
-        return content
-    def save_data(self, arguments) -> None:
-        with COUNTER.open("w") as fp:
-            json.dump(arguments, fp)
+        return image
 
-    def response(self, msg, status_code=200, content_type="text/plain"):
+    def save_data(self, file, arguments: Dict) -> None:
+        with file.open("w") as fp:
+           json.dump(arguments, fp)
+
+
+    def respond_200(self, msg, content_type):
+        self.response(msg, 200, content_type)
+
+    def respond_302(self, redirect):
+        self.response("", 302, "text/plain", redirect)
+
+    def respond_404(self,msg, content_type):
+        self.response(msg, 404 , content_type)
+
+    def response(self, msg, status_code, content_type="text/plain", redirect=""):
         self.send_response(status_code)
         self.send_header("Content-type", content_type)
         self.send_header("Content-length", str(len(msg)))
+        self.send_header("Location",redirect)
         self.end_headers()
 
         if isinstance(msg, str):
-            self.wfile.write(msg.encode())
+            msg = msg.encode()
         self.wfile.write(msg)
+
 
 
 with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
