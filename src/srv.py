@@ -6,7 +6,7 @@ from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
 from typing import Dict
 from urllib.parse import parse_qs
-
+from http import cookies
 
 PROJECT_DIR = Path(__file__).parent.parent.resolve()
 print(f"PROJECT_DIR = {PROJECT_DIR}")
@@ -23,11 +23,13 @@ THEME = PROJECT_DIR / "data" / "theme.json"
 THEME_INDEX = PORTFOLIO / "theme" / "index.html"
 
 SESSION = PROJECT_DIR / "data" / "session.json"
+
 year = datetime.now().year
 hour = datetime.now().hour
 
 PORT = int(os.getenv("PORT", 8000))
 print(f"PORT = {PORT}")
+
 
 
 class NotFound(Exception):
@@ -52,6 +54,7 @@ class MyHandler(SimpleHTTPRequestHandler):
             self.respond_404(image, "image/jpeg")
 
     def do(self, method: str):
+        default_handler = super().do_GET
         path = self.path_calculating()
         handlers = {
             "/hello": self.handler_hello,
@@ -61,15 +64,23 @@ class MyHandler(SimpleHTTPRequestHandler):
             "/education": self.education_response,
             "/theme": self.theme_handler,
             "/counter": self.counter_response,
-            "": super().do_GET
+            "": default_handler
         }
+
+        if path.startswith("/portfolio"):
+            default_handler()
+            return
+
         if path not in handlers:
             raise NotFound()
 
         handler = handlers.get(path)
 
         try:
-            handler(method, path)
+            if handler is default_handler:
+                handler()
+            else:
+                handler(method, path)
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
             image = self.get_picture(file_name)
@@ -86,30 +97,47 @@ class MyHandler(SimpleHTTPRequestHandler):
 
 
     def hello_GETresponse(self,path):
-        sessions = self.get_json(SESSION) or self.parse_function()
-        print(sessions)
+        sessions = self.load_user_session() or self.parse_function()
         name = self.name_calculating(sessions)
         age = self.age_calculating(sessions)
-        print(name, age)
         born = None
         if age:
             born = year - age
 
         html_content = PROJECT_DIR / "hello" / "hello.html"
-
         hello_page = self.get_content(html_content).format(name=name, year=born)
         self.respond_200(hello_page, "text/html")
 
+
     def hello_POSTresponse(self,path):
         form = self.parse_user_sessions()
-        session = self.get_json(SESSION)
-        print(session, form)
+        session = self.load_user_session()
         session.update(form)
-        print(session)
-        self.save_data(SESSION, session)
-        self.respond_302("/hello")
+        session_id = self.save_user_session(session)
+        # self.save_data(SESSION, session)
+        self.respond_302("/hello",session_id)
 
+    def load_user_session(self):
+        session_id = self.get_session_id()
+        if not session_id:
+            return {}
+        session = self.get_json(SESSION)
+        return session.get(session_id, {})
 
+    def save_user_session(self, session):
+        session_id = self.get_session_id() or os.urandom(16).hex()
+        sessions = self.get_json(SESSION)
+        sessions[session_id] = session
+        self.save_data(SESSION, sessions)
+
+        return session_id
+
+    def get_session_id(self):
+        cookie = self.headers.get("Cookie")
+        print(f"COOOKIEEE = {cookie}")
+        if not cookie:
+            return {}
+        return cookie
 
     def goodbye_response(self,method,path):
         self.visits_counter(path)
@@ -142,7 +170,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         theme["background_color"], theme["text_color"] = theme["text_color"], theme["background_color"]
         print(theme)
         self.save_data(THEME, theme)
-        self.respond_302("/theme")
+        self.respond_302("/theme",cookie="")
 
     def counter_response(self,method,path):
         self.visits_counter(path)
@@ -262,23 +290,42 @@ class MyHandler(SimpleHTTPRequestHandler):
     def respond_200(self, msg, content_type):
         self.response(msg, 200, content_type)
 
-    def respond_302(self, redirect):
-        self.response("", 302, "text/plain", redirect)
+    def respond_302(self, redirect,cookie):
+        self.response("", 302, "text/plain", redirect,cookie)
 
     def respond_404(self,msg, content_type):
         self.response(msg, 404 , content_type)
 
-    def response(self, msg, status_code, content_type="text/plain", redirect=""):
+    def response(self, msg, status_code, content_type="text/plain", redirect="",cookie=""):
+        print(cookie)
         self.send_response(status_code)
         self.send_header("Content-type", content_type)
         self.send_header("Content-length", str(len(msg)))
         self.send_header("Location",redirect)
+        self.send_header("Set-Cookie", cookie)
         self.end_headers()
 
         if isinstance(msg, str):
             msg = msg.encode()
         self.wfile.write(msg)
 
+    def linearize_qs(self, qs: Dict) -> Dict:
+        """
+        Linearizes qs dict: only the first value is populated into result
+        """
+        result = {}
+
+        for key, values in qs.items():
+            if not values:
+                continue
+
+            value = values
+            if isinstance(values, list):
+                value = values[0]
+
+            result[key] = value
+
+        return result
 
 
 with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
