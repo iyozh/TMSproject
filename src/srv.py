@@ -6,7 +6,6 @@ from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
 from typing import Dict
 from urllib.parse import parse_qs
-from http import cookies
 
 PROJECT_DIR = Path(__file__).parent.parent.resolve()
 print(f"PROJECT_DIR = {PROJECT_DIR}")
@@ -24,6 +23,9 @@ THEME_INDEX = PORTFOLIO / "theme" / "index.html"
 
 SESSION = PROJECT_DIR / "data" / "session.json"
 
+PROJECTS = PROJECT_DIR / "data" / "projects.json"
+
+PROJECTS_INDEX = PORTFOLIO / "test_projects" / "index.html"
 year = datetime.now().year
 hour = datetime.now().hour
 
@@ -64,7 +66,9 @@ class MyHandler(SimpleHTTPRequestHandler):
             "/education": self.education_response,
             "/theme": self.theme_handler,
             "/counter": self.counter_response,
-            "": default_handler
+            "": default_handler,
+            "/test_projects": self.projects_handler,
+            "/test_projects/editing": self.edit_projects
         }
 
         if path.startswith("/portfolio"):
@@ -97,7 +101,7 @@ class MyHandler(SimpleHTTPRequestHandler):
 
 
     def hello_GETresponse(self,path):
-        sessions = self.load_user_session() or self.parse_function()
+        sessions = self.load_user_session(SESSION) or self.parse_function()
         name = self.name_calculating(sessions)
         age = self.age_calculating(sessions)
         born = None
@@ -111,33 +115,12 @@ class MyHandler(SimpleHTTPRequestHandler):
 
     def hello_POSTresponse(self,path):
         form = self.parse_user_sessions()
-        session = self.load_user_session()
+        session = self.load_user_session(SESSION)
         session.update(form)
-        session_id = self.save_user_session(session)
-        # self.save_data(SESSION, session)
+        session_id = self.save_user_session(session,SESSION)
         self.respond_302("/hello",session_id)
 
-    def load_user_session(self):
-        session_id = self.get_session_id()
-        if not session_id:
-            return {}
-        session = self.get_json(SESSION)
-        return session.get(session_id, {})
 
-    def save_user_session(self, session):
-        session_id = self.get_session_id() or os.urandom(16).hex()
-        sessions = self.get_json(SESSION)
-        sessions[session_id] = session
-        self.save_data(SESSION, sessions)
-
-        return session_id
-
-    def get_session_id(self):
-        cookie = self.headers.get("Cookie")
-        print(f"COOOKIEEE = {cookie}")
-        if not cookie:
-            return {}
-        return cookie
 
     def goodbye_response(self,method,path):
         self.visits_counter(path)
@@ -161,16 +144,67 @@ class MyHandler(SimpleHTTPRequestHandler):
         switcher(path)
 
     def theme_GETresponse(self,path):
-        theme = self.get_json(THEME)
+        theme = self.load_user_session(THEME)
+        if not theme:
+            theme["background_color"] = "white"
+            theme["text_color"] = "black"
         theme_page = self.get_content(THEME_INDEX).format(**theme)
         self.respond_200(theme_page, "text/html")
 
     def theme_POSTresponse(self, path):
-        theme = self.get_json(THEME)
+        theme = self.load_user_session(THEME)
+        if not theme:
+            theme["background_color"] = "white"
+            theme["text_color"] = "black"
         theme["background_color"], theme["text_color"] = theme["text_color"], theme["background_color"]
-        print(theme)
-        self.save_data(THEME, theme)
-        self.respond_302("/theme",cookie="")
+        session_id = self.save_user_session(theme,THEME)
+        self.respond_302("/theme", session_id)
+
+    def projects_handler(self, method, path):
+        self.visits_counter(path)
+        switcher = {
+            'get': self.projects_GETresponse,
+            'post': self.projects_POSTresponse
+        }
+        switcher = switcher[method]
+        switcher(path)
+
+    def projects_GETresponse(self,method):
+        projects_content = self.get_json(PROJECTS)
+        projects = ""
+
+        for project in projects_content:
+            projects += "<h3>" + "PROJECT_NAME:" + projects_content[project]["project_name"] + "</h3>" + "<p>" + f"PROJECT_ID: {project}" + "</p>"
+            projects += "<p>" + "PROJECT_DATE:" + projects_content[project]["project_date"] + "</p>"
+            projects += "<p>" + "PROJECT_DESCRIPTION:" + projects_content[project]["project_description"] + "</p>"
+
+        page_content = self.get_content(PROJECTS_INDEX).format(projects=projects)
+        self.respond_200(page_content, "text/html")
+
+    def add_project(self,method):
+        form_content = self.parse_user_sessions()
+        projects = self.get_json(PROJECTS)
+
+        new_project = {}
+
+        id_new_project = form_content["project_id"]
+        new_project[id_new_project] = {"project_name": "", "project_description": "","project_date": ""}
+
+        for item in form_content:
+            if item in new_project[id_new_project]:
+                new_project[id_new_project][item] = form_content[item]
+
+        projects.update(new_project)
+
+        self.save_data(PROJECTS, projects)
+
+        self.respond_302("/test_projects", "")
+
+
+
+    def edit_projects(self,method,path):
+        edit_page = self.get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
+        self.respond_200(edit_page, "text/html")
 
     def counter_response(self,method,path):
         self.visits_counter(path)
@@ -216,7 +250,6 @@ class MyHandler(SimpleHTTPRequestHandler):
             payload = self.rfile.read(content_length)
         except (KeyError, ValueError):
             payload = ""
-        print(payload.decode())
         return payload.decode()
 
     def visits_counter(self, path):
@@ -225,7 +258,6 @@ class MyHandler(SimpleHTTPRequestHandler):
             arguments[path] = 1
         else:
             arguments[path] = arguments[path] + 1
-        print(arguments)
         self.save_data(COUNTER, arguments)
 
     def path_calculating(self):
@@ -286,6 +318,26 @@ class MyHandler(SimpleHTTPRequestHandler):
         with file.open("w") as fp:
            json.dump(arguments, fp)
 
+    def load_user_session(self, file_name):
+        session_id = self.get_session_id()
+        if not session_id:
+            return {}
+        session = self.get_json(file_name)
+        return session.get(session_id, {})
+
+    def save_user_session(self, session, file_name):
+        session_id = self.get_session_id() or os.urandom(16).hex()
+        sessions = self.get_json(file_name)
+        sessions[session_id] = session
+        self.save_data(file_name, sessions)
+
+        return session_id
+
+    def get_session_id(self):
+        cookie = self.headers.get("Cookie")
+        if not cookie:
+            return {}
+        return cookie
 
     def respond_200(self, msg, content_type):
         self.response(msg, 200, content_type)
