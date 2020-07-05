@@ -5,6 +5,7 @@
 </head>
 <body>
 <h2>Enter the data</h2>
+<p>To delete the project, enter only ID</p>
    <form method = "post">
         <p>
         <label for="project_name">PROJECT_NAME:</label>
@@ -22,7 +23,8 @@
         <label for="project_date">PROJECT_DATE:</label>
         <input id="project_date" name="project_date" >
     </p>
-    <button type="submit" formaction="/test_projects">Add</button>
+    <button type="submit" formaction="/test_projects/editing/add">Add</button>
+       <button type="submit" formaction="/test_projects/editing/delete">Delete</button>
    </form>
 
 </body>

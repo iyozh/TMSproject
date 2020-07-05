@@ -37,6 +37,8 @@ print(f"PORT = {PORT}")
 class NotFound(Exception):
     ...
 
+class Missing_Data(Exception):
+    ...
 
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -68,7 +70,9 @@ class MyHandler(SimpleHTTPRequestHandler):
             "/counter": self.counter_response,
             "": default_handler,
             "/test_projects": self.projects_handler,
-            "/test_projects/editing": self.edit_projects
+            "/test_projects/editing": self.get_editing_page,
+            "/test_projects/editing/add": self.projects_handler,
+            "/test_projects/editing/delete": self.projects_handler
         }
 
         if path.startswith("/portfolio"):
@@ -89,6 +93,8 @@ class MyHandler(SimpleHTTPRequestHandler):
             file_name = PROJECT_DIR / "images" / "error404.jpg"
             image = self.get_picture(file_name)
             self.respond_404(image, "image/jpeg")
+        except Missing_Data:
+            self.respond_400(msg = "You miss something...")
 
     def handler_hello(self, method: str, path):
         self.visits_counter(path)
@@ -104,7 +110,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         sessions = self.load_user_session(SESSION) or self.parse_function()
         name = self.name_calculating(sessions)
         age = self.age_calculating(sessions)
+
         born = None
+
         if age:
             born = year - age
 
@@ -153,21 +161,35 @@ class MyHandler(SimpleHTTPRequestHandler):
 
     def theme_POSTresponse(self, path):
         theme = self.load_user_session(THEME)
+
         if not theme:
             theme["background_color"] = "white"
             theme["text_color"] = "black"
+
         theme["background_color"], theme["text_color"] = theme["text_color"], theme["background_color"]
+
         session_id = self.save_user_session(theme,THEME)
         self.respond_302("/theme", session_id)
 
     def projects_handler(self, method, path):
         self.visits_counter(path)
+
         switcher = {
             'get': self.projects_GETresponse,
-            'post': self.projects_POSTresponse
+            'post': self.projects_editing_handler
         }
         switcher = switcher[method]
+
         switcher(path)
+
+    def projects_editing_handler(self, path):
+        switcher = {
+            '/test_projects/editing/add': self.add_project,
+            '/test_projects/editing/delete': self.delete_project
+        }
+
+        handler = switcher[path]
+        handler()
 
     def projects_GETresponse(self,method):
         projects_content = self.get_json(PROJECTS)
@@ -181,8 +203,17 @@ class MyHandler(SimpleHTTPRequestHandler):
         page_content = self.get_content(PROJECTS_INDEX).format(projects=projects)
         self.respond_200(page_content, "text/html")
 
-    def add_project(self,method):
+    def get_editing_page(self, method, path):
+        edit_page = self.get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
+        self.respond_200(edit_page, "text/html")
+
+
+    def add_project(self):
         form_content = self.parse_user_sessions()
+
+        if "project_name" not in form_content or "project_id" not in form_content or "project_description" not in form_content or "project_date" not in form_content:
+            raise Missing_Data()
+
         projects = self.get_json(PROJECTS)
 
         new_project = {}
@@ -201,10 +232,24 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.respond_302("/test_projects", "")
 
 
+    def delete_project(self):
+        form = self.parse_user_sessions()
+        projects = self.get_json(PROJECTS)
 
-    def edit_projects(self,method,path):
-        edit_page = self.get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
-        self.respond_200(edit_page, "text/html")
+        if "project_id" not in form:
+            raise Missing_Data()
+
+        project_id = form["project_id"]
+
+        if project_id not in projects:
+            raise Missing_Data()
+
+        projects.pop(project_id)
+        self.save_data(PROJECTS,projects)
+        self.respond_302("/test_projects", "")
+
+
+
 
     def counter_response(self,method,path):
         self.visits_counter(path)
@@ -238,10 +283,12 @@ class MyHandler(SimpleHTTPRequestHandler):
         payload = data.decode()
         qs = parse_qs(payload)
         user_data = {}
+
         for key, values in qs.items():
             if not values:
                 continue
             user_data[key] = values[0]
+
         return user_data
 
     def get_request_payload(self) -> str:
@@ -345,8 +392,13 @@ class MyHandler(SimpleHTTPRequestHandler):
     def respond_302(self, redirect,cookie):
         self.response("", 302, "text/plain", redirect,cookie)
 
+    def respond_400(self,msg):
+        self.response(msg, 400,"text/plain")
+
+
     def respond_404(self,msg, content_type):
         self.response(msg, 404 , content_type)
+
 
     def response(self, msg, status_code, content_type="text/plain", redirect="",cookie=""):
         print(cookie)
