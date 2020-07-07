@@ -1,8 +1,5 @@
-counters.json
-projects.json
-session.json
-theme.json
-education.json
+data/
+portfolio/education/education.json
 .idea/
 # Byte-compiled / optimized / DLL files
 __pycache__/

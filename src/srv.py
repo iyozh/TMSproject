@@ -1,7 +1,7 @@
 import json
 import os
 import socketserver
-from datetime import datetime
+import datetime
 from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
 from typing import Dict
@@ -26,8 +26,8 @@ SESSION = PROJECT_DIR / "data" / "session.json"
 PROJECTS = PROJECT_DIR / "data" / "projects.json"
 
 PROJECTS_INDEX = PORTFOLIO / "test_projects" / "index.html"
-year = datetime.now().year
-hour = datetime.now().hour
+year = datetime.datetime.now().year
+hour = datetime.datetime.now().hour
 
 PORT = int(os.getenv("PORT", 8000))
 print(f"PORT = {PORT}")
@@ -289,9 +289,46 @@ class MyHandler(SimpleHTTPRequestHandler):
     def get_stats(self, method, path):
         self.visits_counter(path)
         counts = self.get_json(COUNTER)
+
+        today = datetime.date.today()
+
+        stats = {}
+
+        for page in counts:
+            stats[page] = {}
+            stats[page]["today"] = self.stats_calculating(counts[page],today,0)
+            stats[page]["yesterday"] = self.stats_calculating(counts[page],today - datetime.timedelta(days=1),0)
+            stats[page]["week"] = self.stats_calculating(counts[page],today,7)
+            stats[page]["month"] = self.stats_calculating(counts[page], today, 30)
+
+        html = """<tr>
+                   <th>Page</th>
+                   <th>Today</th>
+                   <th>Yesterday</th> 
+                   <th>Week</th>
+                   <th>Month</th>
+                  </tr>"""
+        for page, visits in stats.items():
+            html += f"<tr><td>{page}</td>"
+            for date, count in visits.items():
+                html += f"<td>{count}</td>"
+        html += "</tr>"
+
         file_name = PORTFOLIO / "stats" / "index.html"
-        content = self.get_content(file_name).format(**counts)
+        content = self.get_content(file_name).format(stats=html)
         self.respond_200(content, "text/html")
+
+
+    def stats_calculating(self,page,start_day,days):
+        visit_counter = 0
+
+        for day_counter in range(0,days+1):
+            day = str(start_day - datetime.timedelta(days=day_counter))
+            if day in page:
+                visit_counter += page[day]
+
+        return visit_counter
+
 
     def get_portfolio(self, method, path):
         self.visits_counter(path)
@@ -335,12 +372,15 @@ class MyHandler(SimpleHTTPRequestHandler):
         return payload.decode()
 
     def visits_counter(self, path):
-        arguments = self.get_json(COUNTER)
-        if path not in arguments:
-            arguments[path] = 1
-        else:
-            arguments[path] = arguments[path] + 1
-        self.save_data(COUNTER, arguments)
+        counts = self.get_json(COUNTER)
+        today = str(datetime.date.today())
+
+        if path not in counts:
+            counts[path] = {}
+        if today not in counts[path]:
+            counts[path][today] = 0
+        counts[path][today] += 1
+        self.save_data(COUNTER, counts)
 
     def path_calculating(self):
         path = self.path.split("?")[0]
