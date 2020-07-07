@@ -63,12 +63,12 @@ class MyHandler(SimpleHTTPRequestHandler):
         path = self.path_calculating()
         handlers = {
             "/hello": self.handler_hello,
-            "/goodbye": self.goodbye_response,
-            "/aboutme": self.aboutme_response,
-            "/projects": self.projects_response,
-            "/education": self.education_response,
+            "/goodbye": self.get_page_goodbye,
+            "/aboutme": self.get_portfolio,
+            "/projects": self.get_projects,
+            "/education": self.get_edu_page,
             "/theme": self.theme_handler,
-            "/counter": self.counter_response,
+            "/counter": self.get_stats,
             "": default_handler,
             "/test_projects": self.projects_handler,
             "/test_projects/editing": self.get_editing_page,
@@ -125,7 +125,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         session_id = self.save_user_session(session, SESSION)
         self.respond_302("/hello", session_id)
 
-    def goodbye_response(self, method, path):
+    def get_page_goodbye(self, method, path):
         self.visits_counter(path)
         if hour in range(6, 11):
             msg = f"\n\t\t\t\t   Good morning!"
@@ -286,27 +286,27 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.save_data(PROJECTS, projects)
         self.respond_302("/test_projects", "")
 
-    def counter_response(self, method, path):
+    def get_stats(self, method, path):
         self.visits_counter(path)
         counts = self.get_json(COUNTER)
         file_name = PORTFOLIO / "stats" / "index.html"
         content = self.get_content(file_name).format(**counts)
         self.respond_200(content, "text/html")
 
-    def aboutme_response(self, method, path):
+    def get_portfolio(self, method, path):
         self.visits_counter(path)
         file_name = PORTFOLIO / "aboutme" / "index.html"
         content = self.get_content(file_name)
         self.respond_200(content, "text/html")
 
-    def education_response(self, method, path):
+    def get_edu_page(self, method, path):
         self.visits_counter(path)
         edu_info = self.get_json(EDUCATION)
         file_name = PORTFOLIO / "education" / "index.html"
         content = self.get_content(file_name).format(**edu_info)
         self.respond_200(content, "text/html")
 
-    def projects_response(self, method, path):
+    def get_projects(self, method, path):
         self.visits_counter(path)
         file_name = PORTFOLIO / "projects" / "index.html"
         content = self.get_content(file_name)
