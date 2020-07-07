@@ -1,4 +1,4 @@
-data/
+data/*.json
 portfolio/education/education.json
 .idea/
 # Byte-compiled / optimized / DLL files
