@@ -101,8 +101,8 @@ class MyHandler(SimpleHTTPRequestHandler):
     def handler_hello(self, method: str, path):
         self.visits_counter(path)
         switcher = {"get": self.hello_GETresponse, "post": self.hello_POSTresponse}
-        switcher = switcher[method]
-        switcher(path)
+        handler = switcher[method]
+        handler(path)
 
     def hello_GETresponse(self, path):
         sessions = self.load_user_session(SESSION) or self.parse_function()
@@ -142,21 +142,22 @@ class MyHandler(SimpleHTTPRequestHandler):
         switcher = switcher[method]
         switcher(path)
 
-    def theme_GETresponse(self, path):
-        theme = self.load_user_session(THEME)
+    def switch_color(self, theme):
         if not theme:
             theme["background_color"] = "white"
             theme["text_color"] = "black"
+
+        return theme
+
+    def theme_GETresponse(self, path):
+        theme_session = self.load_user_session(THEME)
+        theme = self.switch_color(theme_session)
         theme_page = self.get_content(THEME_INDEX).format(**theme)
         self.respond_200(theme_page, "text/html")
 
     def theme_POSTresponse(self, path):
-        theme = self.load_user_session(THEME)
-
-        if not theme:
-            theme["background_color"] = "white"
-            theme["text_color"] = "black"
-
+        theme_session = self.load_user_session(THEME)
+        theme = self.switch_color(theme_session)
         theme["background_color"], theme["text_color"] = (
             theme["text_color"],
             theme["background_color"],
@@ -280,7 +281,7 @@ class MyHandler(SimpleHTTPRequestHandler):
             raise Missing_Data()
 
         for item in form:
-            if item is not "project_id":
+            if item != "project_id":
                 projects[form["project_id"]][item] = form[item]
 
         self.save_data(PROJECTS, projects)
