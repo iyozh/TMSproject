@@ -9,7 +9,7 @@ from src.errors import NotFound, Missing_Data
 from src.file_utils import get_picture, get_content
 from src.json_utils import get_json, save_data
 from src.session_utils import parse_user_sessions, load_user_session, save_user_session
-from src.theme_utils import switch_color
+from src.theme_utils import switch_color, change_mode
 from src.utils import parse_function, age_calculating, name_calculating, path_calculating
 
 PROJECT_DIR = Path(__file__).parent.parent.resolve()
@@ -151,11 +151,11 @@ class MyHandler(SimpleHTTPRequestHandler):
 
     def post_theme_page(self,path, endpoint):
         switcher = {
-            "/theme/night_mode": self.change_mode
+            "/theme/night_mode": change_mode
         }
         handler = switcher[path]
 
-        handler(path, endpoint)
+        handler(self, path, endpoint)
 
     def get_theme_page(self, path,redirect):
         self.visits_counter(path)
@@ -327,22 +327,13 @@ class MyHandler(SimpleHTTPRequestHandler):
 
     def post_edu_page(self,path,endpoint):
         switcher = {
-            "/education/night_mode": self.change_mode
+            "/education/night_mode": change_mode
         }
         handler = switcher[path]
 
-        handler(path,endpoint)
+        handler(self,path,endpoint)
 
-    def change_mode(self, path,redirect):
-        theme_session = load_user_session(self,THEME)
-        theme = switch_color(theme_session)
-        theme["background_color"], theme["text_color"] = (
-            theme["text_color"],
-            theme["background_color"],
-        )
 
-        session_id = save_user_session(self, theme, THEME)
-        respond_302(self,redirect, session_id)
 
 
     def get_edu_page(self, path,redirect):
