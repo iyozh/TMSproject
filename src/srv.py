@@ -4,6 +4,7 @@ import socketserver
 from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
 
+from src.responses import respond_400, respond_200, respond_302 , respond_404
 from src.errors import NotFound, Missing_Data
 from src.file_utils import get_picture, get_content
 from src.json_utils import get_json, save_data
@@ -53,7 +54,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
             image = get_picture(file_name)
-            self.respond_404(image, "image/jpeg")
+            respond_404(self, image, "image/jpeg")
 
     def do_POST(self):
         try:
@@ -61,7 +62,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
             image = get_picture(file_name)
-            self.respond_404(image, "image/jpeg")
+            respond_404(image, "image/jpeg")
 
     def do(self, method: str):
         default_handler = super().do_GET
@@ -101,9 +102,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
             image = get_picture(file_name)
-            self.respond_404(image, "image/jpeg")
+            respond_404(self,image, "image/jpeg")
         except Missing_Data:
-            self.respond_400()
+            respond_400(self)
 
     def handler_hello(self, method: str, path):
         self.visits_counter(path)
@@ -112,7 +113,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         handler(path)
 
     def hello_GETresponse(self, path):
-        sessions = load_user_session(self.headers, SESSION) or parse_function(self.path)
+        sessions = load_user_session(self, SESSION) or parse_function(self,path)
         name = name_calculating(sessions)
         age = age_calculating(sessions)
 
@@ -123,14 +124,14 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         html_content = PROJECT_DIR / "hello" / "hello.html"
         hello_page = get_content(html_content).format(name=name, year=born)
-        self.respond_200(hello_page, "text/html")
+        respond_200(self,hello_page, "text/html")
 
     def hello_POSTresponse(self, path):
-        form = parse_user_sessions(self.headers, self.rfile)
-        session = load_user_session(self.headers, SESSION)
+        form = parse_user_sessions(self)
+        session = load_user_session(self, SESSION)
         session.update(form)
-        session_id = save_user_session(self.headers, session, SESSION)
-        self.respond_302("/hello", session_id)
+        session_id = save_user_session(self, session, SESSION)
+        respond_302(self, "/hello", session_id)
 
     def get_page_goodbye(self, method, path):
         self.visits_counter(path)
@@ -141,7 +142,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         else:
             msg = f"\n\t\t\t\t   Good night!"
 
-        self.respond_200(msg, "text/plain")
+        respond_200(self, msg, "text/plain")
 
     def theme_handler(self, method, path):
         switcher = {"get": self.get_theme_page, "post": self.post_theme_page}
@@ -158,10 +159,10 @@ class MyHandler(SimpleHTTPRequestHandler):
 
     def get_theme_page(self, path,redirect):
         self.visits_counter(path)
-        theme_session = load_user_session(self.headers, THEME)
+        theme_session = load_user_session(self, THEME)
         theme = switch_color(theme_session)
         theme_page = get_content(THEME_INDEX).format(**theme)
-        self.respond_200(theme_page, "text/html")
+        respond_200(self,theme_page, "text/html")
 
     def projects_handler(self, method, path):
 
@@ -198,15 +199,15 @@ class MyHandler(SimpleHTTPRequestHandler):
             )
 
         page_content = get_content(PROJECTS_INDEX).format(projects=projects)
-        self.respond_200(page_content, "text/html")
+        respond_200(self, page_content, "text/html")
 
     def get_editing_page(self, method, path):
         self.visits_counter(path)
         edit_page = get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
-        self.respond_200(edit_page, "text/html")
+        respond_200(self, edit_page, "text/html")
 
     def add_project(self):
-        form_content = parse_user_sessions(self.headers, self.rfile)
+        form_content = parse_user_sessions(self)
 
         if (
                 "project_name" not in form_content
@@ -239,10 +240,10 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         save_data(PROJECTS, projects)
 
-        self.respond_302("/test_projects", "")
+        respond_302(self, "/test_projects", "")
 
     def delete_project(self):
-        form = parse_user_sessions(self.headers, self.rfile)
+        form = parse_user_sessions(self)
         projects = get_json(PROJECTS)
 
         if "project_id" not in form:
@@ -255,10 +256,10 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         projects.pop(project_id)
         save_data(PROJECTS, projects)
-        self.respond_302("/test_projects", "")
+        respond_302(self, "/test_projects", "")
 
     def change_project(self):
-        form = parse_user_sessions(self.headers, self.rfile)
+        form = parse_user_sessions(self)
         projects = get_json(PROJECTS)
 
         if "project_id" not in form:
@@ -269,7 +270,7 @@ class MyHandler(SimpleHTTPRequestHandler):
                 projects[form["project_id"]][item] = form[item]
 
         save_data(PROJECTS, projects)
-        self.respond_302("/test_projects", "")
+        respond_302(self,"/test_projects", "")
 
     def get_stats(self, method, path):
         self.visits_counter(path)
@@ -296,7 +297,7 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         file_name = PORTFOLIO / "stats" / "index.html"
         content = get_content(file_name).format(stats=table_template)
-        self.respond_200(content, "text/html")
+        respond_200(self,content, "text/html")
 
     def stats_calculating(self, page, start_day, days):
         visit_counter = 0
@@ -312,7 +313,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.visits_counter(path)
         file_name = PORTFOLIO / "aboutme" / "index.html"
         content = get_content(file_name)
-        self.respond_200(content, "text/html")
+        respond_200(self, content, "text/html")
 
     def edu_handler(self,method,path):
 
@@ -333,31 +334,31 @@ class MyHandler(SimpleHTTPRequestHandler):
         handler(path,endpoint)
 
     def change_mode(self, path,redirect):
-        theme_session = load_user_session(self.headers, THEME)
+        theme_session = load_user_session(self,THEME)
         theme = switch_color(theme_session)
         theme["background_color"], theme["text_color"] = (
             theme["text_color"],
             theme["background_color"],
         )
 
-        session_id = save_user_session(self.headers, theme, THEME)
-        self.respond_302(redirect, session_id)
+        session_id = save_user_session(self, theme, THEME)
+        respond_302(self,redirect, session_id)
 
 
     def get_edu_page(self, path,redirect):
         self.visits_counter(path)
-        theme_session = load_user_session(self.headers, THEME)
+        theme_session = load_user_session(self, THEME)
         theme = switch_color(theme_session)
         edu_info = get_json(EDUCATION)
         file_name = PORTFOLIO / "education" / "index.html"
         content = get_content(file_name).format(**edu_info, **theme)
-        self.respond_200(content, "text/html")
+        respond_200(self,content, "text/html")
 
     def get_projects(self, method, path):
         self.visits_counter(path)
         file_name = PORTFOLIO / "projects" / "index.html"
         content = get_content(file_name)
-        self.respond_200(content, "text/html")
+        respond_200(self,content, "text/html")
 
     def visits_counter(self, path):
         counts = get_json(COUNTER)
@@ -370,32 +371,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         counts[path][today] += 1
         save_data(COUNTER, counts)
 
-    def respond_200(self, msg, content_type):
-        self.response(msg, 200, content_type)
 
-    def respond_302(self, redirect, cookie):
-        self.response("", 302, "text/plain", redirect, cookie)
 
-    def respond_400(self, msg="You miss something..."):
-        self.response(msg, 400, "text/plain")
 
-    def respond_404(self, msg, content_type):
-        self.response(msg, 404, content_type)
-
-    def response(
-            self, msg, status_code, content_type="text/plain", redirect="", cookie=""
-    ):
-        print(cookie)
-        self.send_response(status_code)
-        self.send_header("Content-type", content_type)
-        self.send_header("Content-length", str(len(msg)))
-        self.send_header("Location", redirect)
-        self.send_header("Set-Cookie", cookie)
-        self.end_headers()
-
-        if isinstance(msg, str):
-            msg = msg.encode()
-        self.wfile.write(msg)
 
 
 with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
