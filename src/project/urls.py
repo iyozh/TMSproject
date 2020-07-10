@@ -14,24 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-import datetime
+
 
 from django.contrib import admin
-from django.http import HttpResponse
 from django.urls import path
 
-
-def get_page_goodbye(request):
-    hour = datetime.datetime.now().hour
-
-    if hour in range(6, 11):
-        msg = f"\n\t\t\t\t   Good morning!"
-    elif hour in range(12, 24):
-        msg = f"\n\t\t\t\t   Good day!"
-    else:
-        msg = f"\n\t\t\t\t   Good night!"
-
-    return HttpResponse(msg)
+from src.pages.goodbye import get_page_goodbye
 
 urlpatterns = [
     path('admin/', admin.site.urls),
