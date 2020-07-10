@@ -1,7 +1,7 @@
+import datetime
 import json
 import os
 import socketserver
-import datetime
 from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
 from typing import Dict
@@ -26,6 +26,15 @@ SESSION = PROJECT_DIR / "data" / "session.json"
 PROJECTS = PROJECT_DIR / "data" / "projects.json"
 
 PROJECTS_INDEX = PORTFOLIO / "test_projects" / "index.html"
+
+PROJECTS_TEMPLATE = PORTFOLIO / "test_projects" / "projects_template.html"
+
+TABLE_TEMPLATE = PORTFOLIO / "stats" / "table_template.html"
+
+TABLE_PAGES = PORTFOLIO / "stats" / "table_pages.html"
+
+TABLE_COUNTS = PORTFOLIO / "stats" / "table_counts.html"
+
 year = datetime.datetime.now().year
 hour = datetime.datetime.now().hour
 
@@ -66,8 +75,10 @@ class MyHandler(SimpleHTTPRequestHandler):
             "/goodbye": self.get_page_goodbye,
             "/aboutme": self.get_portfolio,
             "/projects": self.get_projects,
-            "/education": self.get_edu_page,
+            "/education": self.edu_handler,
+            "/education/night_mode": self.edu_handler,
             "/theme": self.theme_handler,
+            "/theme/night_mode": self.theme_handler,
             "/counter": self.get_stats,
             "": default_handler,
             "/test_projects": self.projects_handler,
@@ -137,10 +148,17 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.respond_200(msg, "text/plain")
 
     def theme_handler(self, method, path):
-        self.visits_counter(path)
-        switcher = {"get": self.theme_GETresponse, "post": self.theme_POSTresponse}
-        switcher = switcher[method]
-        switcher(path)
+        switcher = {"get": self.get_theme_page, "post": self.post_theme_page}
+        handler = switcher[method]
+        handler(path,"/theme")
+
+    def post_theme_page(self,path, endpoint):
+        switcher = {
+            "/theme/night_mode": self.change_mode
+        }
+        handler = switcher[path]
+
+        handler(path, endpoint)
 
     def switch_color(self, theme):
         if not theme:
@@ -149,25 +167,14 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         return theme
 
-    def theme_GETresponse(self, path):
+    def get_theme_page(self, path,redirect):
+        self.visits_counter(path)
         theme_session = self.load_user_session(THEME)
         theme = self.switch_color(theme_session)
         theme_page = self.get_content(THEME_INDEX).format(**theme)
         self.respond_200(theme_page, "text/html")
 
-    def theme_POSTresponse(self, path):
-        theme_session = self.load_user_session(THEME)
-        theme = self.switch_color(theme_session)
-        theme["background_color"], theme["text_color"] = (
-            theme["text_color"],
-            theme["background_color"],
-        )
-
-        session_id = self.save_user_session(theme, THEME)
-        self.respond_302("/theme", session_id)
-
     def projects_handler(self, method, path):
-        self.visits_counter(path)
 
         switcher = {
             "get": self.projects_GETresponse,
@@ -187,37 +194,25 @@ class MyHandler(SimpleHTTPRequestHandler):
         handler = switcher[path]
         handler()
 
-    def projects_GETresponse(self, method):
+    def projects_GETresponse(self,path):
+        self.visits_counter(path)
         projects_content = self.get_json(PROJECTS)
+        template = self.get_content(PROJECTS_TEMPLATE)
         projects = ""
 
         for project in projects_content:
-            projects += (
-                "<h3>"
-                + "PROJECT_NAME:"
-                + projects_content[project]["project_name"]
-                + "</h3>"
-                + "<p>"
-                + f"PROJECT_ID: {project}"
-                + "</p>"
-            )
-            projects += (
-                "<p>"
-                + "PROJECT_DATE:"
-                + projects_content[project]["project_date"]
-                + "</p>"
-            )
-            projects += (
-                "<p>"
-                + "PROJECT_DESCRIPTION:"
-                + projects_content[project]["project_description"]
-                + "</p>"
+            projects += template.format(
+                project_name=projects_content[project]["project_name"],
+                project_id=project,
+                project_date=projects_content[project]["project_date"],
+                project_description=projects_content[project]["project_description"],
             )
 
         page_content = self.get_content(PROJECTS_INDEX).format(projects=projects)
         self.respond_200(page_content, "text/html")
 
     def get_editing_page(self, method, path):
+        self.visits_counter(path)
         edit_page = self.get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
         self.respond_200(edit_page, "text/html")
 
@@ -225,10 +220,10 @@ class MyHandler(SimpleHTTPRequestHandler):
         form_content = self.parse_user_sessions()
 
         if (
-            "project_name" not in form_content
-            or "project_id" not in form_content
-            or "project_description" not in form_content
-            or "project_date" not in form_content
+                "project_name" not in form_content
+                or "project_id" not in form_content
+                or "project_description" not in form_content
+                or "project_date" not in form_content
         ):
             raise Missing_Data()
 
@@ -297,39 +292,32 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         for page in counts:
             stats[page] = {}
-            stats[page]["today"] = self.stats_calculating(counts[page],today,0)
-            stats[page]["yesterday"] = self.stats_calculating(counts[page],today - datetime.timedelta(days=1),0)
-            stats[page]["week"] = self.stats_calculating(counts[page],today,7)
+            stats[page]["today"] = self.stats_calculating(counts[page], today, 0)
+            stats[page]["yesterday"] = self.stats_calculating(
+                counts[page], today - datetime.timedelta(days=1), 0
+            )
+            stats[page]["week"] = self.stats_calculating(counts[page], today, 7)
             stats[page]["month"] = self.stats_calculating(counts[page], today, 30)
 
-        html = """<tr>
-                   <th>Page</th>
-                   <th>Today</th>
-                   <th>Yesterday</th> 
-                   <th>Week</th>
-                   <th>Month</th>
-                  </tr>"""
+        table_template = self.get_content(TABLE_TEMPLATE)
         for page, visits in stats.items():
-            html += f"<tr><td>{page}</td>"
+            table_template += self.get_content(TABLE_PAGES).format(page=page)
             for date, count in visits.items():
-                html += f"<td>{count}</td>"
-        html += "</tr>"
+                table_template += self.get_content(TABLE_COUNTS).format(count=count)
 
         file_name = PORTFOLIO / "stats" / "index.html"
-        content = self.get_content(file_name).format(stats=html)
+        content = self.get_content(file_name).format(stats=table_template)
         self.respond_200(content, "text/html")
 
-
-    def stats_calculating(self,page,start_day,days):
+    def stats_calculating(self, page, start_day, days):
         visit_counter = 0
 
-        for day_counter in range(0,days+1):
+        for day_counter in range(0, days + 1):
             day = str(start_day - datetime.timedelta(days=day_counter))
             if day in page:
                 visit_counter += page[day]
 
         return visit_counter
-
 
     def get_portfolio(self, method, path):
         self.visits_counter(path)
@@ -337,11 +325,43 @@ class MyHandler(SimpleHTTPRequestHandler):
         content = self.get_content(file_name)
         self.respond_200(content, "text/html")
 
-    def get_edu_page(self, method, path):
+    def edu_handler(self,method,path):
+
+        switcher = {
+            "get": self.get_edu_page,
+            "post": self.post_edu_page,
+        }
+        handler = switcher[method]
+
+        handler(path,"/education")
+
+    def post_edu_page(self,path,endpoint):
+        switcher = {
+            "/education/night_mode": self.change_mode
+        }
+        handler = switcher[path]
+
+        handler(path,endpoint)
+
+    def change_mode(self, path,redirect):
+        theme_session = self.load_user_session(THEME)
+        theme = self.switch_color(theme_session)
+        theme["background_color"], theme["text_color"] = (
+            theme["text_color"],
+            theme["background_color"],
+        )
+
+        session_id = self.save_user_session(theme, THEME)
+        self.respond_302(redirect, session_id)
+
+
+    def get_edu_page(self, path,redirect):
         self.visits_counter(path)
+        theme_session = self.load_user_session(THEME)
+        theme = self.switch_color(theme_session)
         edu_info = self.get_json(EDUCATION)
         file_name = PORTFOLIO / "education" / "index.html"
-        content = self.get_content(file_name).format(**edu_info)
+        content = self.get_content(file_name).format(**edu_info,**theme)
         self.respond_200(content, "text/html")
 
     def get_projects(self, method, path):
@@ -475,7 +495,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.response(msg, 404, content_type)
 
     def response(
-        self, msg, status_code, content_type="text/plain", redirect="", cookie=""
+            self, msg, status_code, content_type="text/plain", redirect="", cookie=""
     ):
         print(cookie)
         self.send_response(status_code)
