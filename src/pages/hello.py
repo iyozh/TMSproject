@@ -1,12 +1,12 @@
 import datetime
 
-from src.file_utils import get_content
+from src.utils.file_utils import get_content
 from src.path import PROJECT_DIR, SESSION
 from src.responses import respond_200, respond_302
-from src.session_utils import (load_user_session, parse_user_sessions,
-                               save_user_session)
-from src.stats import visits_counter
-from src.utils import age_calculating, name_calculating, parse_function
+from src.utils.session_utils import (load_user_session, parse_user_sessions,
+                                    save_user_session)
+from src.pages.stats import visits_counter
+from src.utils.utils import age_calculating, name_calculating, parse_function
 
 year = datetime.datetime.now().year
 hour = datetime.datetime.now().hour

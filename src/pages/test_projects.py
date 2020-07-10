@@ -1,10 +1,10 @@
 from src.errors import Missing_Data
-from src.file_utils import get_content
-from src.json_utils import get_json, save_data
+from src.utils.file_utils import get_content
+from src.utils.json_utils import get_json, save_data
 from src.path import PORTFOLIO, PROJECTS, PROJECTS_INDEX, PROJECTS_TEMPLATE
 from src.responses import respond_200, respond_302
-from src.session_utils import parse_user_sessions
-from src.stats import visits_counter
+from src.utils.session_utils import parse_user_sessions
+from src.pages.stats import visits_counter
 
 
 def projects_handler(server, method, path):

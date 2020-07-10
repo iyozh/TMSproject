@@ -1,7 +1,7 @@
-from src.file_utils import get_content
+from src.utils.file_utils import get_content
 from src.path import PORTFOLIO
 from src.responses import respond_200
-from src.stats import visits_counter
+from src.pages.stats import visits_counter
 
 
 def get_portfolio(server, method, path):

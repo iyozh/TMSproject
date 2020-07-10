@@ -1,10 +1,9 @@
-from pathlib import Path
 
+
+from src.path import THEME
 from src.responses import respond_302
-from src.session_utils import load_user_session, save_user_session
+from src.utils.session_utils import load_user_session, save_user_session
 
-PROJECT_DIR = Path(__file__).parent.parent.resolve()
-THEME = PROJECT_DIR / "data" / "theme.json"
 
 
 def change_mode(server, path, redirect):

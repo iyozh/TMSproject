@@ -1,7 +1,7 @@
 import datetime
 
-from src.file_utils import get_content
-from src.json_utils import get_json, save_data
+from src.utils.file_utils import get_content
+from src.utils.json_utils import get_json, save_data
 from src.path import (COUNTER, PORTFOLIO, TABLE_COUNTS, TABLE_PAGES,
                       TABLE_TEMPLATE)
 from src.responses import respond_200

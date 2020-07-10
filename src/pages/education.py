@@ -1,10 +1,13 @@
-from src.file_utils import get_content
-from src.json_utils import get_json
+
+
 from src.path import EDUCATION, PORTFOLIO, THEME
 from src.responses import respond_200
-from src.session_utils import load_user_session
-from src.stats import visits_counter
-from src.theme_utils import change_mode, switch_color
+
+from src.pages.stats import visits_counter
+from src.utils.file_utils import get_content
+from src.utils.json_utils import get_json
+from src.utils.session_utils import load_user_session
+from src.utils.theme_utils import switch_color, change_mode
 
 
 def edu_handler(server, method, path):

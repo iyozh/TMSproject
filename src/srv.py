@@ -2,19 +2,19 @@ import os
 import socketserver
 from http.server import SimpleHTTPRequestHandler
 
-from src.education import edu_handler
+from src.pages.education import edu_handler
 from src.errors import Missing_Data, NotFound
-from src.file_utils import get_picture
-from src.goodbye import get_page_goodbye
-from src.hello import handler_hello
+from src.utils.file_utils import get_picture
+from src.pages.goodbye import get_page_goodbye
+from src.pages.hello import handler_hello
 from src.path import PROJECT_DIR
-from src.projects import get_projects
+from src.pages.projects import get_projects
 from src.responses import respond_400, respond_404
-from src.resume import get_portfolio
-from src.stats import get_stats
-from src.test_projects import get_editing_page, projects_handler
-from src.theme_page import theme_handler
-from src.utils import path_calculating
+from src.pages.resume import get_portfolio
+from src.pages.stats import get_stats
+from src.pages.test_projects import get_editing_page, projects_handler
+from src.pages.theme_page import theme_handler
+from src.utils.utils import path_calculating
 
 PORT = int(os.getenv("PORT", 8000))
 print(f"PORT = {PORT}")

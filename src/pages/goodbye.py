@@ -1,7 +1,7 @@
 import datetime
 
 from src.responses import respond_200
-from src.stats import visits_counter
+from src.pages.stats import visits_counter
 
 hour = datetime.datetime.now().hour
 

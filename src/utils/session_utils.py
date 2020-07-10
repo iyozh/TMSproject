@@ -2,7 +2,7 @@ import os
 from typing import Dict
 from urllib.parse import parse_qs
 
-from src.json_utils import get_json, save_data
+from src.utils.json_utils import get_json, save_data
 
 
 def parse_user_sessions(server) -> Dict[str, str]:

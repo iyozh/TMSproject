@@ -1,9 +1,9 @@
-from src.file_utils import get_content
+from src.utils.file_utils import get_content
 from src.path import THEME, THEME_INDEX
 from src.responses import respond_200
-from src.session_utils import load_user_session
-from src.stats import visits_counter
-from src.theme_utils import change_mode, switch_color
+from src.utils.session_utils import load_user_session
+from src.pages.stats import visits_counter
+from src.utils.theme_utils import change_mode, switch_color
 
 
 def theme_handler(server, method, path):
