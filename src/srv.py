@@ -1,11 +1,15 @@
 import datetime
-import json
 import os
 import socketserver
 from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
-from typing import Dict
-from urllib.parse import parse_qs
+
+from src.errors import NotFound, Missing_Data
+from src.file_utils import get_picture, get_content
+from src.json_utils import get_json, save_data
+from src.session_utils import parse_user_sessions, load_user_session, save_user_session
+from src.theme_utils import switch_color
+from src.utils import parse_function, age_calculating, name_calculating, path_calculating
 
 PROJECT_DIR = Path(__file__).parent.parent.resolve()
 print(f"PROJECT_DIR = {PROJECT_DIR}")
@@ -42,21 +46,13 @@ PORT = int(os.getenv("PORT", 8000))
 print(f"PORT = {PORT}")
 
 
-class NotFound(Exception):
-    ...
-
-
-class Missing_Data(Exception):
-    ...
-
-
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         try:
             self.do("get")
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
-            image = self.get_picture(file_name)
+            image = get_picture(file_name)
             self.respond_404(image, "image/jpeg")
 
     def do_POST(self):
@@ -64,12 +60,12 @@ class MyHandler(SimpleHTTPRequestHandler):
             self.do("post")
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
-            image = self.get_picture(file_name)
+            image = get_picture(file_name)
             self.respond_404(image, "image/jpeg")
 
     def do(self, method: str):
         default_handler = super().do_GET
-        path = self.path_calculating()
+        path = path_calculating(self.path)
         handlers = {
             "/hello": self.handler_hello,
             "/goodbye": self.get_page_goodbye,
@@ -104,7 +100,7 @@ class MyHandler(SimpleHTTPRequestHandler):
                 handler(method, path)
         except NotFound:
             file_name = PROJECT_DIR / "images" / "error404.jpg"
-            image = self.get_picture(file_name)
+            image = get_picture(file_name)
             self.respond_404(image, "image/jpeg")
         except Missing_Data:
             self.respond_400()
@@ -116,9 +112,9 @@ class MyHandler(SimpleHTTPRequestHandler):
         handler(path)
 
     def hello_GETresponse(self, path):
-        sessions = self.load_user_session(SESSION) or self.parse_function()
-        name = self.name_calculating(sessions)
-        age = self.age_calculating(sessions)
+        sessions = load_user_session(self.headers, SESSION) or parse_function(self.path)
+        name = name_calculating(sessions)
+        age = age_calculating(sessions)
 
         born = None
 
@@ -126,14 +122,14 @@ class MyHandler(SimpleHTTPRequestHandler):
             born = year - age
 
         html_content = PROJECT_DIR / "hello" / "hello.html"
-        hello_page = self.get_content(html_content).format(name=name, year=born)
+        hello_page = get_content(html_content).format(name=name, year=born)
         self.respond_200(hello_page, "text/html")
 
     def hello_POSTresponse(self, path):
-        form = self.parse_user_sessions()
-        session = self.load_user_session(SESSION)
+        form = parse_user_sessions(self.headers, self.rfile)
+        session = load_user_session(self.headers, SESSION)
         session.update(form)
-        session_id = self.save_user_session(session, SESSION)
+        session_id = save_user_session(self.headers, session, SESSION)
         self.respond_302("/hello", session_id)
 
     def get_page_goodbye(self, method, path):
@@ -160,18 +156,11 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         handler(path, endpoint)
 
-    def switch_color(self, theme):
-        if not theme:
-            theme["background_color"] = "white"
-            theme["text_color"] = "black"
-
-        return theme
-
     def get_theme_page(self, path,redirect):
         self.visits_counter(path)
-        theme_session = self.load_user_session(THEME)
-        theme = self.switch_color(theme_session)
-        theme_page = self.get_content(THEME_INDEX).format(**theme)
+        theme_session = load_user_session(self.headers, THEME)
+        theme = switch_color(theme_session)
+        theme_page = get_content(THEME_INDEX).format(**theme)
         self.respond_200(theme_page, "text/html")
 
     def projects_handler(self, method, path):
@@ -196,8 +185,8 @@ class MyHandler(SimpleHTTPRequestHandler):
 
     def projects_GETresponse(self,path):
         self.visits_counter(path)
-        projects_content = self.get_json(PROJECTS)
-        template = self.get_content(PROJECTS_TEMPLATE)
+        projects_content = get_json(PROJECTS)
+        template = get_content(PROJECTS_TEMPLATE)
         projects = ""
 
         for project in projects_content:
@@ -208,16 +197,16 @@ class MyHandler(SimpleHTTPRequestHandler):
                 project_description=projects_content[project]["project_description"],
             )
 
-        page_content = self.get_content(PROJECTS_INDEX).format(projects=projects)
+        page_content = get_content(PROJECTS_INDEX).format(projects=projects)
         self.respond_200(page_content, "text/html")
 
     def get_editing_page(self, method, path):
         self.visits_counter(path)
-        edit_page = self.get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
+        edit_page = get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
         self.respond_200(edit_page, "text/html")
 
     def add_project(self):
-        form_content = self.parse_user_sessions()
+        form_content = parse_user_sessions(self.headers, self.rfile)
 
         if (
                 "project_name" not in form_content
@@ -227,7 +216,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         ):
             raise Missing_Data()
 
-        projects = self.get_json(PROJECTS)
+        projects = get_json(PROJECTS)
 
         new_project = {}
 
@@ -248,13 +237,13 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         projects.update(new_project)
 
-        self.save_data(PROJECTS, projects)
+        save_data(PROJECTS, projects)
 
         self.respond_302("/test_projects", "")
 
     def delete_project(self):
-        form = self.parse_user_sessions()
-        projects = self.get_json(PROJECTS)
+        form = parse_user_sessions(self.headers, self.rfile)
+        projects = get_json(PROJECTS)
 
         if "project_id" not in form:
             raise Missing_Data()
@@ -265,12 +254,12 @@ class MyHandler(SimpleHTTPRequestHandler):
             raise Missing_Data()
 
         projects.pop(project_id)
-        self.save_data(PROJECTS, projects)
+        save_data(PROJECTS, projects)
         self.respond_302("/test_projects", "")
 
     def change_project(self):
-        form = self.parse_user_sessions()
-        projects = self.get_json(PROJECTS)
+        form = parse_user_sessions(self.headers, self.rfile)
+        projects = get_json(PROJECTS)
 
         if "project_id" not in form:
             raise Missing_Data()
@@ -279,12 +268,12 @@ class MyHandler(SimpleHTTPRequestHandler):
             if item != "project_id":
                 projects[form["project_id"]][item] = form[item]
 
-        self.save_data(PROJECTS, projects)
+        save_data(PROJECTS, projects)
         self.respond_302("/test_projects", "")
 
     def get_stats(self, method, path):
         self.visits_counter(path)
-        counts = self.get_json(COUNTER)
+        counts = get_json(COUNTER)
 
         today = datetime.date.today()
 
@@ -299,14 +288,14 @@ class MyHandler(SimpleHTTPRequestHandler):
             stats[page]["week"] = self.stats_calculating(counts[page], today, 7)
             stats[page]["month"] = self.stats_calculating(counts[page], today, 30)
 
-        table_template = self.get_content(TABLE_TEMPLATE)
+        table_template = get_content(TABLE_TEMPLATE)
         for page, visits in stats.items():
-            table_template += self.get_content(TABLE_PAGES).format(page=page)
+            table_template += get_content(TABLE_PAGES).format(page=page)
             for date, count in visits.items():
-                table_template += self.get_content(TABLE_COUNTS).format(count=count)
+                table_template += get_content(TABLE_COUNTS).format(count=count)
 
         file_name = PORTFOLIO / "stats" / "index.html"
-        content = self.get_content(file_name).format(stats=table_template)
+        content = get_content(file_name).format(stats=table_template)
         self.respond_200(content, "text/html")
 
     def stats_calculating(self, page, start_day, days):
@@ -322,7 +311,7 @@ class MyHandler(SimpleHTTPRequestHandler):
     def get_portfolio(self, method, path):
         self.visits_counter(path)
         file_name = PORTFOLIO / "aboutme" / "index.html"
-        content = self.get_content(file_name)
+        content = get_content(file_name)
         self.respond_200(content, "text/html")
 
     def edu_handler(self,method,path):
@@ -344,56 +333,34 @@ class MyHandler(SimpleHTTPRequestHandler):
         handler(path,endpoint)
 
     def change_mode(self, path,redirect):
-        theme_session = self.load_user_session(THEME)
-        theme = self.switch_color(theme_session)
+        theme_session = load_user_session(self.headers, THEME)
+        theme = switch_color(theme_session)
         theme["background_color"], theme["text_color"] = (
             theme["text_color"],
             theme["background_color"],
         )
 
-        session_id = self.save_user_session(theme, THEME)
+        session_id = save_user_session(self.headers, theme, THEME)
         self.respond_302(redirect, session_id)
 
 
     def get_edu_page(self, path,redirect):
         self.visits_counter(path)
-        theme_session = self.load_user_session(THEME)
-        theme = self.switch_color(theme_session)
-        edu_info = self.get_json(EDUCATION)
+        theme_session = load_user_session(self.headers, THEME)
+        theme = switch_color(theme_session)
+        edu_info = get_json(EDUCATION)
         file_name = PORTFOLIO / "education" / "index.html"
-        content = self.get_content(file_name).format(**edu_info,**theme)
+        content = get_content(file_name).format(**edu_info, **theme)
         self.respond_200(content, "text/html")
 
     def get_projects(self, method, path):
         self.visits_counter(path)
         file_name = PORTFOLIO / "projects" / "index.html"
-        content = self.get_content(file_name)
+        content = get_content(file_name)
         self.respond_200(content, "text/html")
 
-    def parse_user_sessions(self) -> Dict[str, str]:
-        content_length = int(self.headers["Content-Length"])
-        data = self.rfile.read(content_length)
-        payload = data.decode()
-        qs = parse_qs(payload)
-        user_data = {}
-
-        for key, values in qs.items():
-            if not values:
-                continue
-            user_data[key] = values[0]
-
-        return user_data
-
-    def get_request_payload(self) -> str:
-        try:
-            content_length = int(self.headers[("content-length")])
-            payload = self.rfile.read(content_length)
-        except (KeyError, ValueError):
-            payload = ""
-        return payload.decode()
-
     def visits_counter(self, path):
-        counts = self.get_json(COUNTER)
+        counts = get_json(COUNTER)
         today = str(datetime.date.today())
 
         if path not in counts:
@@ -401,86 +368,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         if today not in counts[path]:
             counts[path][today] = 0
         counts[path][today] += 1
-        self.save_data(COUNTER, counts)
-
-    def path_calculating(self):
-        path = self.path.split("?")[0]
-        if path[-1] == "/":
-            path = path[:-1]
-        return path
-
-    def name_calculating(self, qs_arguments: Dict):
-        return qs_arguments.get("name", "anonymous")
-
-    def age_calculating(self, qs_arguments: Dict):
-        return int(qs_arguments.get("age", 0))
-
-    def parse_function(self):
-        _path, *qs = self.path.split("?")
-        arguments = {}
-
-        if len(qs) != 1:
-            return arguments
-
-        qs = qs[0]
-        qs = parse_qs(qs)
-
-        for keys, values in qs.items():
-            if not values:
-                continue
-            arguments[keys] = values[0]
-
-        return arguments
-
-    def get_json(self, file_info):
-        try:
-            with file_info.open("r", encoding="utf-8") as usf:
-                return json.load(usf)  # what does load?
-        except (json.JSONDecodeError, FileNotFoundError):
-            return {}
-
-    def get_content(self, file_name: Path):
-        if not file_name.is_file():
-            raise NotFound()
-
-        with file_name.open("r") as fp:
-            content = fp.read()
-
-        return content
-
-    def get_picture(self, file_name: Path):
-        if not file_name.is_file():
-            raise NotFound()
-
-        with file_name.open("rb") as picture:
-            image = picture.read()
-
-        return image
-
-    def save_data(self, file, arguments: Dict) -> None:
-        with file.open("w") as fp:
-            json.dump(arguments, fp)
-
-    def load_user_session(self, file_name):
-        session_id = self.get_session_id()
-        if not session_id:
-            return {}
-        session = self.get_json(file_name)
-        return session.get(session_id, {})
-
-    def save_user_session(self, session, file_name):
-        session_id = self.get_session_id() or os.urandom(16).hex()
-        sessions = self.get_json(file_name)
-        sessions[session_id] = session
-        self.save_data(file_name, sessions)
-
-        return session_id
-
-    def get_session_id(self):
-        cookie = self.headers.get("Cookie")
-        if not cookie:
-            return {}
-        return cookie
+        save_data(COUNTER, counts)
 
     def respond_200(self, msg, content_type):
         self.response(msg, 200, content_type)
@@ -508,24 +396,6 @@ class MyHandler(SimpleHTTPRequestHandler):
         if isinstance(msg, str):
             msg = msg.encode()
         self.wfile.write(msg)
-
-    def linearize_qs(self, qs: Dict) -> Dict:
-        """
-        Linearizes qs dict: only the first value is populated into result
-        """
-        result = {}
-
-        for key, values in qs.items():
-            if not values:
-                continue
-
-            value = values
-            if isinstance(values, list):
-                value = values[0]
-
-            result[key] = value
-
-        return result
 
 
 with socketserver.TCPServer(("", PORT), MyHandler) as httpd:

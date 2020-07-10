@@ -1,0 +1,6 @@
+class NotFound(Exception):
+    ...
+
+
+class Missing_Data(Exception):
+    ...
