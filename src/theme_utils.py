@@ -1,6 +1,7 @@
-from src.session_utils import load_user_session,save_user_session
-from src.responses import respond_302
 from pathlib import Path
+
+from src.responses import respond_302
+from src.session_utils import load_user_session, save_user_session
 
 PROJECT_DIR = Path(__file__).parent.parent.resolve()
 THEME = PROJECT_DIR / "data" / "theme.json"
@@ -16,6 +17,7 @@ def change_mode(server, path, redirect):
 
     session_id = save_user_session(server, theme, THEME)
     respond_302(server, redirect, session_id)
+
 
 def switch_color(theme):
     if not theme:

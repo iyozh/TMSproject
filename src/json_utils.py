@@ -1,6 +1,7 @@
 import json
 from typing import Dict
 
+
 def get_json(file_info):
     try:
         with file_info.open("r", encoding="utf-8") as usf:

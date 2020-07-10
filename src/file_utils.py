@@ -1,5 +1,7 @@
-from src.errors import NotFound, Missing_Data
 from pathlib import Path
+
+from src.errors import Missing_Data, NotFound
+
 
 def get_picture(file_name: Path):
     if not file_name.is_file():

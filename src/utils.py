@@ -21,7 +21,7 @@ def linearize_qs(qs: Dict) -> Dict:
     return result
 
 
-def parse_function(server,path):
+def parse_function(server, path):
     _path, *qs = path.split("?")
     arguments = {}
 

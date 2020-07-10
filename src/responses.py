@@ -13,8 +13,9 @@ def respond_400(server, msg="You miss something..."):
 def respond_404(server, msg, content_type):
     response(server, msg, 404, content_type)
 
+
 def response(
-        server, msg, status_code, content_type="text/plain", redirect="", cookie=""
+    server, msg, status_code, content_type="text/plain", redirect="", cookie=""
 ):
     print(cookie)
     server.send_response(status_code)
