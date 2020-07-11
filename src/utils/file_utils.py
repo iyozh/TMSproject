@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.errors import Missing_Data, NotFound
+from errors import NotFound
 
 
 def get_picture(file_name: Path):
@@ -21,3 +21,4 @@ def get_content(file_name: Path):
         content = fp.read()
 
     return content
+

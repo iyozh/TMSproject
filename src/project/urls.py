@@ -19,13 +19,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from src.pages.goodbye import get_page_goodbye
-from src.pages.projects import get_projects_page
-from src.pages.resume import get_portfolio
+from pages.goodbye import get_page_goodbye
+from pages.projects import get_projects_page, get_projects_css
+from pages.resume import get_portfolio, get_resume_css
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('goodbye/', get_page_goodbye),
     path('resume/', get_portfolio),
-    path('projects/', get_projects_page)
+    path('projects/', get_projects_page),
+    path('resume/portfolio/aboutme/css/main.css', get_resume_css),
+    path('projects/portfolio/projects/css/main.css', get_projects_css)
 ]

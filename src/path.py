@@ -27,3 +27,5 @@ TABLE_TEMPLATE = PORTFOLIO / "stats" / "table_template.html"
 TABLE_PAGES = PORTFOLIO / "stats" / "table_pages.html"
 
 TABLE_COUNTS = PORTFOLIO / "stats" / "table_counts.html"
+
+RESUME_CSS = PORTFOLIO / "aboutme" / "css" / "main.css"
