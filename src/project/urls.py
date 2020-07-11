@@ -20,8 +20,10 @@ from django.contrib import admin
 from django.urls import path
 
 from src.pages.goodbye import get_page_goodbye
+from src.pages.resume import get_portfolio
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('goodbye/', get_page_goodbye)
+    path('goodbye/', get_page_goodbye),
+    path('resume/', get_portfolio)
 ]
