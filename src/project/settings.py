@@ -25,7 +25,7 @@ SECRET_KEY = 'ic_ov!i8rc*e5&gj3)(m%w1-j61-hq8fibzca5g@lr=m4)a6u&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 1
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1']
+ALLOWED_HOSTS = ['localhost','127.0.0.1', 'yozhikapp.herokuapp.com']
 
 
 # Application definition
