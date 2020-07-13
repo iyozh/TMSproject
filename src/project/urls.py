@@ -19,6 +19,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from pages.education import edu_handler
 from pages.goodbye import get_page_goodbye
 from pages.hello import handler_hello
 from pages.projects import get_projects_page, get_projects_css
@@ -33,5 +34,7 @@ urlpatterns = [
     path('resume/portfolio/aboutme/css/main.css', get_resume_css),
     path('projects/portfolio/projects/css/main.css', get_projects_css),
     path('hello/', handler_hello),
-    path('stats/', get_stats)
+    path('stats/', get_stats),
+    path('education/', edu_handler),
+    path('education/night_mode', edu_handler)
 ]
