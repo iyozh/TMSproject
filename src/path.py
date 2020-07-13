@@ -1,22 +1,19 @@
-from pathlib import Path
+from django.conf import settings
 
-PROJECT_DIR = Path(__file__).parent.parent.resolve()
-print(f"PROJECT_DIR = {PROJECT_DIR}")
+PORTFOLIO = settings.REPO_DIR / "portfolio"
 
-PORTFOLIO = PROJECT_DIR / "portfolio"
-print(f"PORTFOLIO = {PORTFOLIO}")
 
 EDUCATION = PORTFOLIO / "education" / "education.json"
 
-COUNTER = PROJECT_DIR / "data" / "counters.json"
+COUNTER = settings.REPO_DIR / "data" / "counters.json"
 
-THEME = PROJECT_DIR / "data" / "theme.json"
+THEME = settings.REPO_DIR / "data" / "theme.json"
 
 THEME_INDEX = PORTFOLIO / "theme" / "index.html"
 
-SESSION = PROJECT_DIR / "data" / "session.json"
+SESSION = settings.REPO_DIR / "data" / "session.json"
 
-PROJECTS = PROJECT_DIR / "data" / "projects.json"
+PROJECTS = settings.REPO_DIR / "data" / "projects.json"
 
 PROJECTS_INDEX = PORTFOLIO / "test_projects" / "index.html"
 
@@ -29,3 +26,11 @@ TABLE_PAGES = PORTFOLIO / "stats" / "table_pages.html"
 TABLE_COUNTS = PORTFOLIO / "stats" / "table_counts.html"
 
 RESUME_CSS = PORTFOLIO / "aboutme" / "css" / "main.css"
+
+PROJECTS_CSS = PORTFOLIO / "projects" / "css" / "main.css"
+
+RESUME_INDEX = PORTFOLIO / "aboutme" / "index.html"
+
+HELLO_PAGE = settings.REPO_DIR / "hello" / "hello.html"
+
+MY_PROJECTS_PAGE = PORTFOLIO / "projects" / "index.html"

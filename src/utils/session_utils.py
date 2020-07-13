@@ -3,6 +3,7 @@ from typing import Dict
 from urllib.parse import parse_qs
 
 from utils.json_utils import get_json, save_data
+from utils.utils import linearize_qs
 
 
 def parse_user_sessions(request) -> Dict[str, str]:
@@ -33,7 +34,9 @@ def get_session_id(request):
     cookie = request.headers.get("Cookie")
     if not cookie:
         return {}
-    return cookie
+    args = linearize_qs(parse_qs(cookie))
+    session_id = args.get("SESSION_ID")
+    return session_id
 
 
 def load_user_session(request, file_name):

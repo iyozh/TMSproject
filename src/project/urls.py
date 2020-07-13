@@ -23,6 +23,7 @@ from pages.goodbye import get_page_goodbye
 from pages.hello import handler_hello
 from pages.projects import get_projects_page, get_projects_css
 from pages.resume import get_portfolio, get_resume_css
+from pages.stats import get_stats
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,5 +32,6 @@ urlpatterns = [
     path('projects/', get_projects_page),
     path('resume/portfolio/aboutme/css/main.css', get_resume_css),
     path('projects/portfolio/projects/css/main.css', get_projects_css),
-    path('hello/', handler_hello)
+    path('hello/', handler_hello),
+    path('stats/', get_stats)
 ]

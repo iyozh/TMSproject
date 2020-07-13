@@ -2,8 +2,11 @@ import datetime
 
 from django.http import HttpResponse
 
+from pages.stats import visits_counter
+
 
 def get_page_goodbye(request):
+    visits_counter(request.path)
     hour = datetime.datetime.now().hour
 
     if hour in range(6, 11):
