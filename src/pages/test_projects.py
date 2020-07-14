@@ -6,7 +6,7 @@ from utils.file_utils import get_content
 from utils.json_utils import get_json, save_data
 from path import PORTFOLIO, PROJECTS, PROJECTS_INDEX, PROJECTS_TEMPLATE
 from utils.session_utils import parse_user_sessions
-from src.pages.stats import visits_counter
+from pages.stats import visits_counter
 
 @require_http_methods(['GET', 'POST'])
 def projects_handler(request):
