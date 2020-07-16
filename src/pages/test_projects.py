@@ -1,3 +1,5 @@
+import os
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 
@@ -9,7 +11,7 @@ from utils.session_utils import parse_user_sessions
 from pages.stats import visits_counter
 
 @require_http_methods(['GET', 'POST'])
-def projects_handler(request):
+def projects_handler(request,**kw):
     switcher = {
         "GET": projects_GETresponse,
         "POST": projects_editing_handler,
@@ -17,23 +19,24 @@ def projects_handler(request):
     handler = switcher[request.method]
 
     try:
-        return handler(request,"/test_projects")
+        return handler(request,"/test_projects",kw)
     except Missing_Data:
         return HttpResponse("You miss something...")
 
 
-def projects_editing_handler(request, redirect):
+def projects_editing_handler(request, redirect,kw):
+    project_id = kw.get("project_id",0)
     switcher = {
         "/test_projects/editing/add": add_project,
-        "/test_projects/editing/delete": delete_project,
+        f"/test_projects/id/{project_id}/delete": delete_project,
         "/test_projects/editing/change": change_project,
     }
 
     handler = switcher[request.path]
-    return handler(request, redirect)
+    return handler(request, redirect,kw)
 
 
-def projects_GETresponse(request,redirect):
+def projects_GETresponse(request,redirect,kw):
     visits_counter(request.path)
     projects_content = get_json(PROJECTS)
     template = get_content(PROJECTS_TEMPLATE)
@@ -51,18 +54,22 @@ def projects_GETresponse(request,redirect):
     return HttpResponse(page_content, "text/html")
 
 
-def get_editing_page(request):
+def get_certain_project(request, **kw):
     visits_counter(request.path)
-    edit_page = get_content(PORTFOLIO / "test_projects" / "edit_projects.html")
+    project_id = kw["project_id"]
+    projects = get_json(PROJECTS)
+
+    certain_project  = projects[project_id]
+
+    edit_page = get_content(PORTFOLIO / "test_projects" / "edit_projects.html").format(**certain_project,project_id=project_id)
     return HttpResponse(edit_page, "text/html")
 
 
-def add_project(request,redirect):
+def add_project(request,redirect,kw):
     form_content = parse_user_sessions(request)
 
     if (
         "project_name" not in form_content
-        or "project_id" not in form_content
         or "project_description" not in form_content
         or "project_date" not in form_content
     ):
@@ -72,10 +79,7 @@ def add_project(request,redirect):
 
     new_project = {}
 
-    id_new_project = form_content["project_id"]
-
-    if id_new_project in projects:
-        raise Missing_Data()
+    id_new_project = os.urandom(16).hex()
 
     new_project[id_new_project] = {
         "project_name": "",
@@ -94,20 +98,11 @@ def add_project(request,redirect):
     return HttpResponseRedirect(redirect)
 
 
-def delete_project(request,redirect):
-    form = parse_user_sessions(request)
+def delete_project(request,redirect,kw):
+    project_id = kw['project_id']
     projects = get_json(PROJECTS)
-
-    if "project_id" not in form:
-        raise Missing_Data()
-
-    project_id = form["project_id"]
-
-    if project_id not in projects:
-        raise Missing_Data()
-
     projects.pop(project_id)
-    save_data(PROJECTS, projects)
+    save_data(PROJECTS,projects)
     return HttpResponseRedirect(redirect)
 
 
@@ -124,3 +119,8 @@ def change_project(request,redirect):
 
     save_data(PROJECTS, projects)
     return HttpResponseRedirect(redirect)
+
+
+def get_adding_page(request):
+    adding_page = get_content(PORTFOLIO / "test_projects" / "add_projects.html")
+    return HttpResponse(adding_page)
