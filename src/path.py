@@ -25,9 +25,9 @@ TABLE_PAGES = PORTFOLIO / "stats" / "table_pages.html"
 
 TABLE_COUNTS = PORTFOLIO / "stats" / "table_counts.html"
 
-RESUME_CSS = PORTFOLIO / "aboutme" / "css" / "main.css"
+RESUME_CSS = PORTFOLIO / "aboutme" / "css" / "projects.css"
 
-PROJECTS_CSS = PORTFOLIO / "projects" / "css" / "main.css"
+PROJECTS_CSS = PORTFOLIO / "projects" / "css" / "projects.css"
 
 RESUME_INDEX = PORTFOLIO / "aboutme" / "index.html"
 

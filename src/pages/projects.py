@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 from pages.stats import visits_counter
 from utils.file_utils import get_content
-from path import MY_PROJECTS_PAGE, PROJECTS_CSS
+from path import MY_PROJECTS_PAGE
 
 
 def get_projects_page(request):
@@ -11,7 +11,3 @@ def get_projects_page(request):
     content = get_content(file_name)
     return HttpResponse(content)
 
-def get_projects_css(request):
-    with (PROJECTS_CSS).open("r") as css:
-        css = css.read()
-    return HttpResponse(css,content_type="text/css")
