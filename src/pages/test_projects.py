@@ -29,7 +29,7 @@ def projects_editing_handler(request, redirect,kw):
     switcher = {
         "/test_projects/editing/add": add_project,
         f"/test_projects/id/{project_id}/delete": delete_project,
-        "/test_projects/editing/change": change_project,
+        f"/test_projects/id/{project_id}/editing/edit/": edit_project,
     }
 
     handler = switcher[request.path]
@@ -61,7 +61,7 @@ def get_certain_project(request, **kw):
 
     certain_project  = projects[project_id]
 
-    edit_page = get_content(PORTFOLIO / "test_projects" / "edit_projects.html").format(**certain_project,project_id=project_id)
+    edit_page = get_content(PORTFOLIO / "test_projects" / "c_project.html").format(**certain_project,project_id=project_id)
     return HttpResponse(edit_page, "text/html")
 
 
@@ -106,16 +106,16 @@ def delete_project(request,redirect,kw):
     return HttpResponseRedirect(redirect)
 
 
-def change_project(request,redirect):
+def edit_project(request,redirect,kw):
     form = parse_user_sessions(request)
     projects = get_json(PROJECTS)
 
-    if "project_id" not in form:
-        raise Missing_Data()
+    # if "project_id" not in form:
+    #     raise Missing_Data()
 
+    project_id = kw["project_id"]
     for item in form:
-        if item != "project_id":
-            projects[form["project_id"]][item] = form[item]
+        projects[project_id][item] = form[item]
 
     save_data(PROJECTS, projects)
     return HttpResponseRedirect(redirect)
@@ -124,3 +124,10 @@ def change_project(request,redirect):
 def get_adding_page(request):
     adding_page = get_content(PORTFOLIO / "test_projects" / "add_projects.html")
     return HttpResponse(adding_page)
+
+def get_editing_page(request,**kw):
+    project_id = kw["project_id"]
+    projects = get_json(PROJECTS)
+    certain_project = projects[project_id]
+    editing_page = get_content(PORTFOLIO / "test_projects" / "edit_projects.html").format(**certain_project,project_id=project_id)
+    return HttpResponse(editing_page)
