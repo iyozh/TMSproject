@@ -7,17 +7,17 @@
    <form method = "post">
         <p>
         <label for="project_name">Project Name:</label>
-        <input id="project_name" name="project_name" value="{project_name}" >
+        <input id="project_name" name="project_name" value="{project_name}" required >
     </p>
         <p>
         <label for="project_date">Project Date:</label>
-        <input id="project_date" name="project_date" value="{project_date}" >
+        <input type="date" id="project_date" name="project_date" value="{project_date}" >
     </p>
        <p>
         <label for="project_description">Project Description:</label>
-        <input id="project_description" name="project_description" value="{project_description}" >
+        <input  id="project_description" name="project_description" value="{project_description}" >
     </p>
-    <button type="submit" formaction="/test_projects/id/{project_id}/editing/edit/">Edit</button>
+    <button type="submit" formaction="/test_projects/id/{project_id}/editing/edit/">Save</button>
    </form>
 
 </body>
