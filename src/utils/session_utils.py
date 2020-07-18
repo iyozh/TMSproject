@@ -7,10 +7,6 @@ from utils.utils import linearize_qs
 
 
 def parse_user_sessions(request) -> Dict[str, str]:
-    # content_length = int(request.headers["Content-Length"])
-    # data = request.rfile.read(content_length)
-    # payload = data.decode()
-    # qs = parse_qs(payload)
     user_data = {}
 
     for key, values in request.POST.items():
