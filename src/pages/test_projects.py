@@ -8,7 +8,8 @@ from utils.file_utils import get_content
 from utils.json_utils import get_json, save_data
 from path import PORTFOLIO, PROJECTS, PROJECTS_INDEX, PROJECTS_TEMPLATE
 from utils.session_utils import parse_user_sessions
-from pages.stats import visits_counter
+from utils.stats_utils import visits_counter
+
 
 @require_http_methods(['GET', 'POST'])
 def projects_handler(request,**kw):
@@ -55,7 +56,6 @@ def projects_GETresponse(request,redirect,kw):
 
 
 def get_certain_project(request, **kw):
-    visits_counter(request.path)
     project_id = kw["project_id"]
     projects = get_json(PROJECTS)
 

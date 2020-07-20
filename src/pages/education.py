@@ -3,7 +3,7 @@ from django.views.decorators.http import require_http_methods
 
 from path import EDUCATION, PORTFOLIO, THEME
 
-from pages.stats import visits_counter
+from utils.stats_utils import visits_counter
 from utils.file_utils import get_content
 from utils.json_utils import get_json
 from utils.theme_utils import get_theme, change_mode

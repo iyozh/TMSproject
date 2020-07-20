@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 
-from pages.stats import visits_counter
+from utils.stats_utils import visits_counter
 from path import RESUME_INDEX
 
 from utils.file_utils import get_content
