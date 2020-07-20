@@ -20,7 +20,6 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 
 from pages.education import edu_handler
-from applications.stats.views import get_stats
 from pages.test_projects import projects_handler, get_certain_project, get_adding_page, delete_project, get_editing_page
 from utils.file_utils import img_handler, css_handler
 

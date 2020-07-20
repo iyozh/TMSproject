@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Statistics
+{% endblock %}
+
+{% block body %}
+<h1 style = "text-align:center">Statistics</h1>
+<table bgcolor="#B5FBDD" align="center" width="50%" cellspacing="0" border="1">
+    <tr>
+        <td>Page</td>
+        <td>Today</td>
+        <td>Yesterday</td>
+        <td>Week</td>
+        <td>Month</td>
+    </tr>
+    {% for item in stats %}
+        <tr>
+            <td>{{ item.page }}</td>
+            <td>{{ item.today }}</td>
+            <td>{{ item.yesterday }}</td>
+            <td>{{ item.week }}</td>
+            <td>{{ item.month }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
