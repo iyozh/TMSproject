@@ -1,9 +1,8 @@
 from django.http import HttpResponse
 
-from utils.stats_utils import visits_counter
 from path import RESUME_INDEX
-
 from utils.file_utils import get_content
+from utils.stats_utils import visits_counter
 
 
 def get_portfolio(request):

@@ -5,6 +5,4 @@ from applications.resume.views import ResumeView
 
 app_name = ResumeConfig.label
 
-urlpatterns = [
-    path("", ResumeView.as_view(), name="resume")
-]
+urlpatterns = [path("", ResumeView.as_view(), name="resume")]

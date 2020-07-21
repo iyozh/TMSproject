@@ -5,6 +5,4 @@ from applications.hello.views import HelloView
 
 app_name = HelloConfig.label
 
-urlpatterns = [
-    path("",HelloView.as_view() , name="hello")
-]
+urlpatterns = [path("", HelloView.as_view(), name="hello")]

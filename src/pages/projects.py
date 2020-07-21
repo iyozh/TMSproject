@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 
-from utils.stats_utils import visits_counter
-from utils.file_utils import get_content
 from path import MY_PROJECTS_PAGE
+from utils.file_utils import get_content
+from utils.stats_utils import visits_counter
 
 
 def get_projects_page(request):
@@ -10,4 +10,3 @@ def get_projects_page(request):
     file_name = MY_PROJECTS_PAGE
     content = get_content(file_name)
     return HttpResponse(content)
-

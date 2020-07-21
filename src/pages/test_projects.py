@@ -4,15 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 
 from errors import Missing_Data
+from path import PORTFOLIO, PROJECTS, PROJECTS_INDEX, PROJECTS_TEMPLATE
 from utils.file_utils import get_content
 from utils.json_utils import get_json, save_data
-from path import PORTFOLIO, PROJECTS, PROJECTS_INDEX, PROJECTS_TEMPLATE
 from utils.session_utils import parse_user_sessions
 from utils.stats_utils import visits_counter
 
 
-@require_http_methods(['GET', 'POST'])
-def projects_handler(request,**kw):
+@require_http_methods(["GET", "POST"])
+def projects_handler(request, **kw):
     switcher = {
         "GET": projects_GETresponse,
         "POST": projects_editing_handler,
@@ -20,13 +20,13 @@ def projects_handler(request,**kw):
     handler = switcher[request.method]
 
     try:
-        return handler(request,"/test_projects",kw)
+        return handler(request, "/test_projects", kw)
     except Missing_Data:
         return HttpResponse("You miss something...")
 
 
-def projects_editing_handler(request, redirect,kw):
-    project_id = kw.get("project_id",0)
+def projects_editing_handler(request, redirect, kw):
+    project_id = kw.get("project_id", 0)
     switcher = {
         "/test_projects/editing/add": add_project,
         f"/test_projects/id/{project_id}/delete": delete_project,
@@ -34,10 +34,10 @@ def projects_editing_handler(request, redirect,kw):
     }
 
     handler = switcher[request.path]
-    return handler(request, redirect,kw)
+    return handler(request, redirect, kw)
 
 
-def projects_GETresponse(request,redirect,kw):
+def projects_GETresponse(request, redirect, kw):
     visits_counter(request.path)
     projects_content = get_json(PROJECTS)
     template = get_content(PROJECTS_TEMPLATE)
@@ -59,13 +59,15 @@ def get_certain_project(request, **kw):
     project_id = kw["project_id"]
     projects = get_json(PROJECTS)
 
-    certain_project  = projects[project_id]
+    certain_project = projects[project_id]
 
-    edit_page = get_content(PORTFOLIO / "test_projects" / "c_project.html").format(**certain_project,project_id=project_id)
+    edit_page = get_content(PORTFOLIO / "test_projects" / "c_project.html").format(
+        **certain_project, project_id=project_id
+    )
     return HttpResponse(edit_page, "text/html")
 
 
-def add_project(request,redirect,kw):
+def add_project(request, redirect, kw):
     form_content = parse_user_sessions(request)
 
     if (
@@ -98,15 +100,15 @@ def add_project(request,redirect,kw):
     return HttpResponseRedirect(redirect)
 
 
-def delete_project(request,redirect,kw):
-    project_id = kw['project_id']
+def delete_project(request, redirect, kw):
+    project_id = kw["project_id"]
     projects = get_json(PROJECTS)
     projects.pop(project_id)
-    save_data(PROJECTS,projects)
+    save_data(PROJECTS, projects)
     return HttpResponseRedirect(redirect)
 
 
-def edit_project(request,redirect,kw):
+def edit_project(request, redirect, kw):
     form = parse_user_sessions(request)
     projects = get_json(PROJECTS)
 
@@ -125,9 +127,12 @@ def get_adding_page(request):
     adding_page = get_content(PORTFOLIO / "test_projects" / "add_projects.html")
     return HttpResponse(adding_page)
 
-def get_editing_page(request,**kw):
+
+def get_editing_page(request, **kw):
     project_id = kw["project_id"]
     projects = get_json(PROJECTS)
     certain_project = projects[project_id]
-    editing_page = get_content(PORTFOLIO / "test_projects" / "edit_projects.html").format(**certain_project,project_id=project_id)
+    editing_page = get_content(
+        PORTFOLIO / "test_projects" / "edit_projects.html"
+    ).format(**certain_project, project_id=project_id)
     return HttpResponse(editing_page)
