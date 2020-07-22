@@ -4,4 +4,11 @@
 Main Page
 {% endblock %}
 
-{% block body %}<h1>Main Page</h1> {% endblock %}
+{% block body %}
+<h1>Main Page</h1>
+ {% endblock %}
+    {% block night_mode %}
+<form  method="post" action="{% url 'main_page:night_mode' %}">
+          <button type="submit" name="theme">CHANGE MODE</button>
+    </form>
+    {% endblock %}

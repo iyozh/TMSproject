@@ -35,16 +35,15 @@ def get_session_id(request):
     return session_id
 
 
-def load_user_session(request, file_name):
-    session_id = get_session_id(request)
-    if not session_id:
+def load_user_session(request):
+    session = request.session
+    if not session or session.is_empty():
         return {}
-    session = get_json(file_name)
-    return session.get(session_id, {})
+    return session
 
 
 def save_user_session(request, session, file_name):
-    session_id = get_session_id(request) or os.urandom(16).hex()
+    session_id = os.urandom(16).hex()
     sessions = get_json(file_name)
     sessions[session_id] = session
     save_data(file_name, sessions)
