@@ -9,6 +9,10 @@ from utils.theme_utils import get_theme, change_mode
 class GoodbyeView(TemplateView):
     template_name = "goodbye/index.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        visits_counter(self.request.path)
+        return super().dispatch(request)
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         theme = get_theme(self.request)

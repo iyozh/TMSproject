@@ -4,12 +4,16 @@ from django.views.generic import TemplateView
 
 from path import COUNTER
 from utils.json_utils import get_json
-from utils.stats_utils import stats_calculating
+from utils.stats_utils import stats_calculating, visits_counter
 from utils.theme_utils import get_theme, change_mode
 
 
 class StatsView(TemplateView):
     template_name = "stats/index.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        visits_counter(self.request.path)
+        return super().dispatch(request)
 
     def get_context_data(self,**kwargs):
 
