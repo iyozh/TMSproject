@@ -14,6 +14,13 @@
        <button type="submit" formaction="{% url 'test_projects:delete' project_id %}">Delete</button>
 
    </form>
-<!--    <button type = "submit" formaction = "{% url 'test_projects:editing_page' project_id %}">Edit</button>-->
+
 
 {% endblock %}
+
+
+ {% block night_mode %}
+<form  method="post" action="{% url 'test_projects:c_project' project_id %}/night_mode">
+          <button type="submit" name="theme">CHANGE MODE</button>
+    </form>
+    {% endblock %}

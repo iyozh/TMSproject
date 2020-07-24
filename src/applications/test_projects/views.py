@@ -8,6 +8,7 @@ from django.views.generic.base import View
 from utils.json_utils import get_json, save_data
 
 from path import PROJECTS
+from utils.theme_utils import get_theme, change_mode
 
 
 class TestProjectsView(TemplateView):
@@ -26,8 +27,8 @@ class TestProjectsView(TemplateView):
                 "project_description": projects_content[id]["project_description"]
             }
             projects.append(project)
-
-        ctx.update({"projects": projects})
+        theme = get_theme(self.request)
+        ctx.update({"projects": projects, "theme": theme})
 
         return ctx
 
@@ -56,6 +57,12 @@ class AddingPageView(FormView):
         save_data(PROJECTS, projects)
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        theme = get_theme(self.request)
+        ctx.update({"theme":theme})
+        return ctx
+
 
 class ProjectPageView(TemplateView):
     template_name = "test_projects/c_project.html"
@@ -69,14 +76,16 @@ class ProjectPageView(TemplateView):
 
         certain_project = projects[project_id]
 
-        ctx.update({"certain_project": certain_project,"project_id":project_id})
+        theme = get_theme(self.request)
+
+        ctx.update({"certain_project": certain_project, "project_id": project_id,"theme": theme})
 
         return ctx
 
 
 class DeleteProjectView(View):
 
-    def post(self,request, **kwargs):
+    def post(self, request, **kwargs):
         projects = get_json(PROJECTS)
         project_id = kwargs["project_id"]
         projects.pop(project_id)
@@ -92,7 +101,6 @@ class EditingForm(forms.Form):
 
 class EditingPageView(FormView):
     template_name = "test_projects/edit_projects.html"
-    success_url = f"test_projects/id/{project_id}"
     form_class = EditingForm
 
     def form_valid(self, form):
@@ -103,16 +111,17 @@ class EditingPageView(FormView):
         project_id = self.kwargs["project_id"]
         for item in form.cleaned_data:
             projects[project_id][item] = form.cleaned_data[item]
+        save_data(PROJECTS,projects)
         return super().form_valid(form)
 
-
-    def get_context_data(self,**kwargs):
+    def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
         project_id = self.kwargs["project_id"]
-        ctx.update({"project_id": project_id})
+        theme = get_theme(self.request)
+        ctx.update({"project_id": project_id, "theme":theme})
         return ctx
 
-    def get_initial(self,**kwargs):
+    def get_initial(self, **kwargs):
         project_name, project_date, project_description = self.build_project()
         return {
             "project_name": project_name,
@@ -127,5 +136,16 @@ class EditingPageView(FormView):
         project_date = projects[project_id]["project_date"]
         project_description = projects[project_id]["project_description"]
 
-        return project_name,project_date,project_description
+        return project_name, project_date, project_description
 
+    def get_success_url(self):
+        project_id = self.kwargs["project_id"]
+        success_url = f"/test_projects/id/{project_id}"
+        return success_url
+
+class NightModeView(View):
+
+    def post(self,request):
+        path = self.request.path
+        new_path = path.replace("/night_mode","")
+        return change_mode(self.request, new_path)

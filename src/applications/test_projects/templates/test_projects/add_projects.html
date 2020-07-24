@@ -13,4 +13,12 @@ Adding Page
     <button type="submit" formaction="{% url 'test_projects:add' %}">Add</button>
    </form>
 
+
+
 {% endblock %}
+
+ {% block night_mode %}
+<form  method="post" action="{% url 'test_projects:adding_page' %}/night_mode">
+          <button type="submit" name="theme">CHANGE MODE</button>
+    </form>
+    {% endblock %}

@@ -12,3 +12,9 @@ Editing Page
    </form>
 
 {% endblock %}
+
+ {% block night_mode %}
+<form  method="post" action="{% url 'test_projects:editing_page' project_id %}/night_mode">
+          <button type="submit" name="theme">CHANGE MODE</button>
+    </form>
+    {% endblock %}

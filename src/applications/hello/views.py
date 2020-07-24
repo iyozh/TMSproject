@@ -66,4 +66,4 @@ class HelloView(FormView):
 class NightModeView(View):
 
     def post(self,request):
-        return change_mode(self.request, "/hello")
+        return change_mode(self.request, "/test_projects")

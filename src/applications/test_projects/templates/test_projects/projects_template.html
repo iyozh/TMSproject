@@ -12,7 +12,14 @@ Test Projects
     <p>Project Description:{{ item.project_description }}</p>
 {% endfor %}
 
-</div>
+<div>
        <b><a href="{% url 'test_projects:adding_page' %}">Add Projects</a></b>
  </div>
+
 {% endblock %}
+
+ {% block night_mode %}
+<form  method="post" action="{% url 'test_projects:night_mode' %}">
+          <button type="submit" name="theme">CHANGE MODE</button>
+    </form>
+    {% endblock %}
