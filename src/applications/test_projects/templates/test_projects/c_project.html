@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+
+{% block title %}
+{{ certain_project.project_name }}
+{% endblock %}
+
+{% block body %}
+
+<h2>PROJECT NAME:{{ certain_project.project_name }}</h2>
+<p>Project Date:{{ certain_project.project_date }}</p>
+<p>Project Description:{{ certain_project.project_description }}</p>
+ <div style="margin-bottom:30px;"><b><a href="{% url 'test_projects:editing_page' project_id %}">Edit the project</a></b></div>
+   <form method = "post">
+       <button type="submit" formaction="{% url 'test_projects:delete' project_id %}">Delete</button>
+
+   </form>
+<!--    <button type = "submit" formaction = "{% url 'test_projects:editing_page' project_id %}">Edit</button>-->
+
+{% endblock %}

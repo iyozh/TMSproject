@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Test Projects
+{% endblock %}
+
+{% block body %}
+
+{% for item in projects %}
+    <h3>PROJECT NAME:<a href = "{% url 'test_projects:c_project' item.project_id %}">{{ item.project_name }}</a></h3>
+    <p>Project Date:{{ item.project_date }}</p>
+    <p>Project Description:{{ item.project_description }}</p>
+{% endfor %}
+
+</div>
+       <b><a href="{% url 'test_projects:adding_page' %}">Add Projects</a></b>
+ </div>
+{% endblock %}

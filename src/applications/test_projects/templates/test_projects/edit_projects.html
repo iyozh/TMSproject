@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Editing Page
+{% endblock %}
+
+{% block body %}
+<h2>Enter the data</h2>
+   <form method = "post">
+       {{ form.as_p }}
+    <button type="submit" formaction="/test_projects/id/{project_id}/editing/edit/">Save</button>
+   </form>
+
+{% endblock %}

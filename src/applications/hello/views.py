@@ -17,7 +17,7 @@ hour = datetime.datetime.now().hour
 
 class HelloForm(forms.Form):
     name = forms.CharField(max_length=200)
-    age = forms.IntegerField(required=False)
+    age = forms.IntegerField(required=False, min_value=0)
 
 
 class HelloView(FormView):
