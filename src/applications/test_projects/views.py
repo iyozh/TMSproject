@@ -92,25 +92,40 @@ class EditingForm(forms.Form):
 
 class EditingPageView(FormView):
     template_name = "test_projects/edit_projects.html"
-    success_url = ""
+    success_url = f"test_projects/id/{project_id}"
     form_class = EditingForm
 
     def form_valid(self, form):
+        # project_name = form.cleaned_data["project_name"]
+        # project_date = form.cleaned_data["project_date"]
+        # project_description = form.cleaned_data["project_description"]
+        projects = get_json(PROJECTS)
+        project_id = self.kwargs["project_id"]
+        for item in form.cleaned_data:
+            projects[project_id][item] = form.cleaned_data[item]
         return super().form_valid(form)
 
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
+    def get_context_data(self,**kwargs):
+        ctx = super().get_context_data()
+        project_id = self.kwargs["project_id"]
+        ctx.update({"project_id": project_id})
         return ctx
 
     def get_initial(self,**kwargs):
-        project_id = kwargs["project_id"]
-        projects = get_json(PROJECTS)
-        project_name = projects[project_id]["project_name"]
-        project_date = projects[project_id]["project_date"]
-        project_description = projects[project_id]["project_description"]
+        project_name, project_date, project_description = self.build_project()
         return {
             "project_name": project_name,
             "project_date": project_date,
             "project_description": project_description
         }
+
+    def build_project(self):
+        project_id = self.kwargs["project_id"]
+        projects = get_json(PROJECTS)
+        project_name = projects[project_id]["project_name"]
+        project_date = projects[project_id]["project_date"]
+        project_description = projects[project_id]["project_description"]
+
+        return project_name,project_date,project_description
+

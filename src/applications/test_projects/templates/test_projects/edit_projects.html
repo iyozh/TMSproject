@@ -8,7 +8,7 @@ Editing Page
 <h2>Enter the data</h2>
    <form method = "post">
        {{ form.as_p }}
-    <button type="submit" formaction="/test_projects/id/{project_id}/editing/edit/">Save</button>
+    <button type="submit" formaction="{% url 'test_projects:edit' project_id %}">Save</button>
    </form>
 
 {% endblock %}

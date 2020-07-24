@@ -13,4 +13,5 @@ urlpatterns = [
     path("id/<str:project_id>/", ProjectPageView.as_view(), name="c_project"),
     path("id/<str:project_id>/delete", DeleteProjectView.as_view(), name="delete"),
     path("id/<str:project_id>/editing", EditingPageView.as_view(), name="editing_page"),
+    path("id/<str:project_id>/editing/edit/", EditingPageView.as_view(), name="edit"),
 ]

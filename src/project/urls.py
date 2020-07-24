@@ -33,6 +33,4 @@ urlpatterns = [
     path("education/", include("applications.education.urls")),
     path("test_projects/", include("applications.test_projects.urls")),
     re_path("img/(?P<path_to_file>.+)$", img_handler),
-    re_path("css/(?P<path_to_file>.+)$", css_handler),
-    path("test_projects/id/<str:project_id>/editing/edit/", projects_handler),
-]
+    re_path("css/(?P<path_to_file>.+)$", css_handler)]
