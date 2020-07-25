@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from path import COUNTER
 from utils.json_utils import get_json
 from utils.stats_utils import stats_calculating, visits_counter
-from utils.theme_utils import get_theme, change_mode
+from utils.theme_utils import change_mode, get_theme
 
 
 class StatsView(TemplateView):
@@ -15,7 +15,7 @@ class StatsView(TemplateView):
         visits_counter(self.request.path)
         return super().dispatch(request)
 
-    def get_context_data(self,**kwargs):
+    def get_context_data(self, **kwargs):
 
         ctx = super().get_context_data(**kwargs)
 
@@ -39,9 +39,9 @@ class StatsView(TemplateView):
             }
             stats.append(stat)
 
-        ctx.update({"stats": stats, "theme":theme})
+        ctx.update({"stats": stats, "theme": theme})
 
         return ctx
 
-    def post(self,request):
-        return change_mode(request,"/stats")
+    def post(self, request):
+        return change_mode(request, "/stats")

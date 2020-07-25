@@ -18,8 +18,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path, re_path
 
-from pages.test_projects import (get_adding_page, get_certain_project,
-                                 get_editing_page, projects_handler)
 from utils.file_utils import css_handler, img_handler
 
 urlpatterns = [
@@ -33,4 +31,5 @@ urlpatterns = [
     path("education/", include("applications.education.urls")),
     path("test_projects/", include("applications.test_projects.urls")),
     re_path("img/(?P<path_to_file>.+)$", img_handler),
-    re_path("css/(?P<path_to_file>.+)$", css_handler)]
+    re_path("css/(?P<path_to_file>.+)$", css_handler),
+]

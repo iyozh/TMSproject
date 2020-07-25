@@ -3,7 +3,7 @@ import datetime
 from django.views.generic import TemplateView
 
 from utils.stats_utils import visits_counter
-from utils.theme_utils import get_theme, change_mode
+from utils.theme_utils import change_mode, get_theme
 
 
 class GoodbyeView(TemplateView):

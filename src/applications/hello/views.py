@@ -6,10 +6,11 @@ from django.shortcuts import render
 from django.views.generic import FormView
 from django.views.generic.base import View
 
-from utils.session_utils import (load_user_session)
+from utils.session_utils import load_user_session
 from utils.stats_utils import visits_counter
-from utils.theme_utils import get_theme, change_mode
-from utils.utils import age_calculating, name_calculating, parse_function, linearize_qs
+from utils.theme_utils import change_mode, get_theme
+from utils.utils import (age_calculating, linearize_qs, name_calculating,
+                         parse_function)
 
 year = datetime.datetime.now().year
 hour = datetime.datetime.now().hour
@@ -29,13 +30,9 @@ class HelloView(FormView):
         visits_counter(self.request.path)
         return super().dispatch(request)
 
-
     def get_initial(self):
         name, age = self.build_name_age()
-        return {
-            "name": name or "",
-            "age": age or None
-        }
+        return {"name": name or "", "age": age or None}
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -63,7 +60,7 @@ class HelloView(FormView):
 
         return name, age
 
-class NightModeView(View):
 
-    def post(self,request):
+class NightModeView(View):
+    def post(self, request):
         return change_mode(self.request, "/test_projects")

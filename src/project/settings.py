@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "applications.hello.apps.HelloConfig",
     "applications.stats.apps.StatsConfig",
     "applications.education.apps.EducationConfig",
-    'applications.test_projects.apps.TestProjectsConfig'
+    "applications.test_projects.apps.TestProjectsConfig",
 ]
 
 MIDDLEWARE = [
