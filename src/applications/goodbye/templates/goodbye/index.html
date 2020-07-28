@@ -10,9 +10,3 @@ Goodbye
 <h2>Good {{msg}}!</h2>
 </div>
 {% endblock %}
-
-{% block night_mode %}
-<form method="post" action="{% url 'goodbye:night_mode' %}">
-          <button type="submit" name="theme">CHANGE MODE</button>
-  </form>
-{% endblock %}

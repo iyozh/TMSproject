@@ -1,16 +1,13 @@
 import datetime
+from typing import NamedTuple
 
 from django import forms
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic import FormView
-from django.views.generic.base import View
 
 from utils.session_utils import load_user_session
-from utils.stats_utils import visits_counter
-from utils.theme_utils import change_mode, get_theme
-from utils.utils import (age_calculating, linearize_qs, name_calculating,
-                         parse_function)
+from utils.stats_utils import count_stats
+from utils.utils import age_calculating, name_calculating, parse_function
 
 year = datetime.datetime.now().year
 hour = datetime.datetime.now().hour
@@ -21,18 +18,16 @@ class HelloForm(forms.Form):
     age = forms.IntegerField(required=False, min_value=0)
 
 
+@count_stats
 class HelloView(FormView):
     template_name = "hello/hello.html"
-    success_url = "/hello/"
+    success_url = reverse_lazy("hello:hello")
     form_class = HelloForm
 
-    def dispatch(self, request, *args, **kwargs):
-        visits_counter(self.request.path)
-        return super().dispatch(request)
-
     def get_initial(self):
-        name, age = self.build_name_age()
-        return {"name": name or "", "age": age or None}
+        user = self.build_name_age()
+        ready_user = user._asdict()
+        return ready_user
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -43,8 +38,8 @@ class HelloView(FormView):
 
         if age is not None:
             born = year - age
-        theme = get_theme(self.request)
-        ctx.update({"name": name, "year": born, "theme": theme})
+
+        ctx.update({"name": name, "year": born})
         return ctx
 
     def form_valid(self, form):
@@ -58,9 +53,9 @@ class HelloView(FormView):
         name = name_calculating(sessions)
         age = age_calculating(sessions)
 
-        return name, age
+        return UserData(name, age)
 
 
-class NightModeView(View):
-    def post(self, request):
-        return change_mode(self.request, "/test_projects")
+class UserData(NamedTuple):
+    name: str
+    age: str

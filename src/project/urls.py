@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 
 from utils.file_utils import css_handler, img_handler
+from utils.theme_utils import NightModeView
 
 urlpatterns = [
     path("", include("applications.main_page.urls")),
@@ -32,4 +33,5 @@ urlpatterns = [
     path("test_projects/", include("applications.test_projects.urls")),
     re_path("img/(?P<path_to_file>.+)$", img_handler),
     re_path("css/(?P<path_to_file>.+)$", css_handler),
+    re_path(".*night_mode", NightModeView.as_view(), name="night_mode"),
 ]

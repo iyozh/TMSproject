@@ -1,9 +1,8 @@
-from django.http import HttpResponseRedirect
+from django.views.generic import RedirectView
 
 
-def change_mode(request, redirect):
+def change_mode(request):
     switch_color(request)
-    return HttpResponseRedirect(redirect)
 
 
 def get_theme(request):
@@ -19,3 +18,15 @@ def switch_color(request):
         current_theme["background_color"],
     )
     request.session["theme"] = current_theme
+
+
+def theme_ctx_processor(request):
+    theme = get_theme(request)
+    return {"theme": theme}
+
+
+class NightModeView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        change_mode(self.request)
+        url = self.request.headers["Referer"]
+        return url

@@ -5,22 +5,22 @@
 {% endblock %}
 
 {% block body %}
-
+<a href = "{% url 'test_projects:t_projects' %}">All Projects</a>
+<hr>
 <h2>PROJECT NAME:{{ certain_project.project_name }}</h2>
 <p>Project Date:{{ certain_project.project_date }}</p>
 <p>Project Description:{{ certain_project.project_description }}</p>
- <div style="margin-bottom:30px;"><b><a href="{% url 'test_projects:editing_page' project_id %}">Edit the project</a></b></div>
+
    <form method = "post">
        <button type="submit" formaction="{% url 'test_projects:delete' project_id %}">Delete</button>
 
    </form>
+<hr><h1 style = "text-align:center">Project Editing</h1><hr>
+<h2>Enter the data</h2>
+   <form method = "post">
+       {{ form.as_p }}
+    <button type="submit" formaction="{% url 'test_projects:c_project' project_id %}">Save</button>
+   </form>
 
 
 {% endblock %}
-
-
- {% block night_mode %}
-<form  method="post" action="{% url 'test_projects:c_project' project_id %}/night_mode">
-          <button type="submit" name="theme">CHANGE MODE</button>
-    </form>
-    {% endblock %}

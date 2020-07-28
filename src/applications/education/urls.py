@@ -7,5 +7,4 @@ app_name = EducationConfig.label
 
 urlpatterns = [
     path("", EducationView.as_view(), name="edu"),
-    path("night_mode", EducationView.as_view(), name="night_mode"),
 ]

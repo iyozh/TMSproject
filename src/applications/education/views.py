@@ -1,19 +1,17 @@
-from django.shortcuts import render
-from django.views.generic.base import View
+from django.views.generic.base import TemplateView
 
 from path import EDUCATION
 from utils.json_utils import get_json
-from utils.stats_utils import visits_counter
-from utils.theme_utils import change_mode, get_theme
+from utils.stats_utils import count_stats
 
 
-class EducationView(View):
-    def get(self, request, **kwargs):
-        visits_counter(request.path)
-        theme = get_theme(request)
+@count_stats
+class EducationView(TemplateView):
+    template_name = "education/index.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
         edu_info = get_json(EDUCATION)
-        ctx = {"theme": theme, "edu_info": edu_info}
-        return render(request, "education/index.html", ctx)
+        ctx.update({"edu_info": edu_info})
 
-    def post(self, request):
-        return change_mode(request, "/education")
+        return ctx

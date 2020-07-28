@@ -8,9 +8,9 @@
 
 <div>
     <div style = "text-align:center">
-    {% block night_mode %}
-    BUTTON
-    {% endblock %}
+  <form  method="post" action="{% url 'night_mode' %}">
+          <button type="submit" name="theme">CHANGE MODE</button>
+    </form>
     </div>
 
     <h1><a href = "{% url 'main_page:main' %}">Main Page</a></h1>

@@ -15,8 +15,3 @@ background-color:{{theme.background_color}};color:{{theme.text_color}};
       Start:{{edu_info.start}}<br>
       End:{{edu_info.end}}<br>
 {% endblock %}
-{% block night_mode %}
-<form method="post" action="{% url 'education:night_mode' %}">
-          <button type="submit" name="theme">CHANGE MODE</button>
-  </form>
-{% endblock %}

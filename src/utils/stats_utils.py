@@ -25,3 +25,15 @@ def stats_calculating(page, start_day, days):
             visit_counter += page[day]
 
     return visit_counter
+
+
+def count_stats(view):
+    class ViewWithStats(view):
+        def dispatch(self, *args, **kwargs):
+            try:
+                response = super().dispatch(*args, **kwargs)
+                return response
+            finally:
+                visits_counter(self.request.path)
+
+    return ViewWithStats
