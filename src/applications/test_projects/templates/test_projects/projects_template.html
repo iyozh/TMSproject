@@ -12,12 +12,15 @@ Test Projects
     margin-bottom:30px;
     margin-top:30px;
     }
-
+    .project{
+    border:1px solid ;
+    padding:10px;
+    }
 </style>
 <hr><h1 style="text-align:center">All Projects</h1><hr>
 <div class="container">
 {% for item in projects %}
-    <div><h3>PROJECT NAME:<a href = "{% url 'test_projects:c_project' item.project_id %}">{{ item.project_name }}</a></h3>
+    <div class = "project"><h2><a href = "{% url 'test_projects:c_project' item.project_id %}">{{ item.project_name }}</a></h2>
     <p>Project Date:{{ item.project_date }}</p>
     <p>Project Description:{{ item.project_description }}</p>
         </div>

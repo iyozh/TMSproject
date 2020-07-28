@@ -7,7 +7,7 @@
 {% block body %}
 <a href = "{% url 'test_projects:t_projects' %}">All Projects</a>
 <hr>
-<h2>PROJECT NAME:{{ certain_project.project_name }}</h2>
+<h2>{{ certain_project.project_name }}</h2>
 <p>Project Date:{{ certain_project.project_date }}</p>
 <p>Project Description:{{ certain_project.project_description }}</p>
 
