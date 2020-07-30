@@ -8,8 +8,8 @@
 <a href = "{% url 'test_projects:t_projects' %}">All Projects</a>
 <hr>
 <h2>{{ certain_project.project_name }}</h2>
-<p>Project Date:{{ certain_project.project_date }}</p>
-<p>Project Description:{{ certain_project.project_description }}</p>
+<p>{{ certain_project.started }} - {{ certain_project.ended }}</p>
+<p>{{ certain_project.project_description }}</p>
 
    <form method = "post">
        <button type="submit" formaction="{% url 'test_projects:delete' project_id %}">Delete</button>

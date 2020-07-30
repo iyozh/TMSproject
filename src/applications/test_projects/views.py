@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
 from django.views.generic.base import RedirectView
 
+from applications.test_projects.models import Project
 from path import PROJECTS
 from utils.json_utils import get_json, save_data
 from utils.stats_utils import count_stats
@@ -13,7 +14,8 @@ from utils.stats_utils import count_stats
 
 class AddingForm(forms.Form):
     project_name = forms.CharField(max_length=50)
-    project_date = forms.CharField(max_length=50)
+    started = forms.CharField()
+    ended = forms.CharField()
     project_description = forms.CharField(max_length=200)
 
 
@@ -32,7 +34,8 @@ class TestProjectsView(FormView):
             project = {
                 "project_id": id,
                 "project_name": projects_content[id]["project_name"],
-                "project_date": projects_content[id]["project_date"],
+                "started": projects_content[id]["started"],
+                "ended": projects_content[id]["ended"],
                 "project_description": projects_content[id]["project_description"],
             }
             projects.append(project)
@@ -47,7 +50,8 @@ class TestProjectsView(FormView):
         project_id = os.urandom(16).hex()
         new_project[project_id] = {
             "project_name": form.cleaned_data["project_name"],
-            "project_date": form.cleaned_data["project_date"],
+            "started": form.cleaned_data["started"],
+            "ended": form.cleaned_data["ended"],
             "project_description": form.cleaned_data["project_description"],
         }
         projects.update(new_project)
@@ -57,7 +61,8 @@ class TestProjectsView(FormView):
 
 class EditingForm(forms.Form):
     project_name = forms.CharField(max_length=50)
-    project_date = forms.CharField()
+    started = forms.CharField()
+    ended = forms.CharField()
     project_description = forms.CharField(max_length=200)
 
 
@@ -96,7 +101,8 @@ class ProjectPageView(FormView):
         projects = get_json(PROJECTS)
         return ProjectData(
             project_name=projects[project_id]["project_name"],
-            project_date=projects[project_id]["project_date"],
+            started=projects[project_id]["started"],
+            ended=projects[project_id]["ended"],
             project_description=projects[project_id]["project_description"],
         )
 
@@ -121,8 +127,8 @@ class DeleteProjectView(RedirectView):
 
 class ProjectData(NamedTuple):
     project_name: str
-    project_date: str
+    started: str
+    ended: str
     project_description: str
-
 
 #

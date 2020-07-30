@@ -21,8 +21,8 @@ Test Projects
 <div class="container">
 {% for item in projects %}
     <div class = "project"><h2><a href = "{% url 'test_projects:c_project' item.project_id %}">{{ item.project_name }}</a></h2>
-    <p>Project Date:{{ item.project_date }}</p>
-    <p>Project Description:{{ item.project_description }}</p>
+    <p>{{ item.started }} - {{ item.ended }}</p>
+    <p>{{ item.project_description }}</p>
         </div>
 {% endfor %}
 </div>
