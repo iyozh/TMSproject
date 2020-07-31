@@ -12,14 +12,14 @@
 <p>{{ certain_project.project_description }}</p>
 
    <form method = "post">
-       <button type="submit" formaction="{% url 'test_projects:delete' project_id %}">Delete</button>
+       <button type="submit" formaction="{% url 'test_projects:delete' certain_project.pk %}">Delete</button>
 
    </form>
 <hr><h1 style = "text-align:center">Project Editing</h1><hr>
 <h2>Enter the data</h2>
    <form method = "post">
        {{ form.as_p }}
-    <button type="submit" formaction="{% url 'test_projects:c_project' project_id %}">Save</button>
+    <button type="submit" formaction="{% url 'test_projects:c_project' certain_project.pk %}">Save</button>
    </form>
 
 
