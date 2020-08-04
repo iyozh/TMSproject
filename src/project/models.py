@@ -1,16 +1,9 @@
 import json
 import os
-from dataclasses import asdict
-from dataclasses import dataclass
-from datetime import date
-from datetime import datetime
+from dataclasses import asdict, dataclass
+from datetime import date, datetime
 from pathlib import Path
-from typing import Callable
-from typing import Dict
-from typing import Generator
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from typing import Callable, Dict, Generator, Optional, Tuple, Union
 
 from django.conf import settings
 
@@ -24,7 +17,7 @@ class Model:
     pk: Optional[str] = None
 
     __json_file__ = None
-    __storage__ = (settings.REPO_DIR / "storage").resolve()
+    __storage__ = (settings.REPO_DIR / "data").resolve()
 
     @classmethod
     def all(cls) -> Tuple["Model"]:
@@ -86,7 +79,7 @@ class Model:
 
     @classmethod
     def _build_objects(
-            cls, predicate: Callable = lambda _x: 1
+        cls, predicate: Callable = lambda _x: 1
     ) -> Generator["Model", None, None]:
         content = cls._load()
 
@@ -96,7 +89,7 @@ class Model:
 
     @classmethod
     def _build_kws(
-            cls, content: Dict, predicate: Callable = lambda _x: 1
+        cls, content: Dict, predicate: Callable = lambda _x: 1
     ) -> Generator[Dict, None, None]:
         for object_id, fields in filter(predicate, content.items()):
             kw = {}

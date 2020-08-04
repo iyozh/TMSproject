@@ -2,9 +2,9 @@ from dataclasses import asdict
 from typing import Dict
 
 from django import forms
+from django.db.models import Model
 
 from applications.test_projects.models import Project
-from project.models import Model
 
 
 class SingleObject:
@@ -17,13 +17,8 @@ class SingleObject:
 
     def get_object(self) -> Model:
         oid = self.get_object_id()
-        obj = Project.one(oid)
+        obj = Project.objects.filter(pk=oid).first()
         return obj
-
-    def get_object_dct(self) -> Dict:
-        obj = self.get_object()
-        dct = asdict(obj)
-        return dct
 
     @classmethod
     def shadow_pk(cls, dct: Dict) -> None:
@@ -31,7 +26,6 @@ class SingleObject:
             del dct[cls.pk_attr]
         except KeyError:
             pass
-
 
     @classmethod
     def update_object(cls, obj, form: forms.Form) -> None:
