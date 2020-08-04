@@ -1,19 +1,23 @@
 import datetime
 
+from applications.stats.models import Stats
 from path import COUNTER
 from utils.json_utils import get_json, save_data
 
 
 def visits_counter(path):
-    counts = get_json(COUNTER)
+    # counts = get_json(COUNTER)
     today = str(datetime.date.today())
 
-    if path not in counts:
-        counts[path] = {}
-    if today not in counts[path]:
-        counts[path][today] = 0
-    counts[path][today] += 1
-    save_data(COUNTER, counts)
+    visit = Stats(url=path,date=today)
+    visit.save()
+
+    # if path not in counts:
+    #     counts[path] = {}
+    # if today not in counts[path]:
+    #     counts[path][today] = 0
+    # counts[path][today] += 1
+    # save_data(COUNTER, counts)
 
 
 def stats_calculating(page, start_day, days):

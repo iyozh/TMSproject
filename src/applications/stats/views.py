@@ -2,9 +2,11 @@ import datetime
 
 from django.views.generic import TemplateView
 
+from applications.stats.models import Stats
 from path import COUNTER
 from utils.json_utils import get_json
 from utils.stats_utils import count_stats, stats_calculating
+from utils.utils import asdict
 
 
 @count_stats
@@ -15,13 +17,16 @@ class StatsView(TemplateView):
 
         ctx = super().get_context_data(**kwargs)
 
-        counts = get_json(COUNTER)
+        # counts = get_json(COUNTER)
+        counts = Stats.objects.all()
+
+        dct = asdict(counts)
 
         today = datetime.date.today()
 
         stats = []
 
-        for page in counts:
+        for page in dct:
             stat = {
                 "page": page,
                 "today": stats_calculating(counts[page], today, 0),

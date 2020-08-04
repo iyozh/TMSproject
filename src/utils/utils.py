@@ -55,3 +55,9 @@ def path_calculating(path1):
     if path[-1] == "/":
         path = path[:-1]
     return path
+
+
+def asdict(obj) -> Dict[str, object]:
+    fields = (_f.name for _f in obj._meta.fields)
+    result = {field: getattr(obj, field) for field in fields}
+    return result
