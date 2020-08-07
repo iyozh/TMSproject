@@ -31,3 +31,11 @@ migrations:
 .PHONY: su
 su:
 	${PY} src/manage.py createsuperuser
+
+
+.PHONY: sh
+sh:
+	${PY} src/manage.py shell
+
+
+

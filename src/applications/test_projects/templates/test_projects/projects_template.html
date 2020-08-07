@@ -20,10 +20,12 @@ Test Projects
 <hr><h1 style="text-align:center">All Projects</h1><hr>
 <div class="container">
 {% for item in projects %}
+    {% if item.visible %}
     <div class = "project"><h2><a href = "{% url 'test_projects:c_project' item.pk %}">{{ item.project_name }}</a></h2>
     <p>{{ item.started }} - {{ item.ended }}</p>
     <p>{{ item.project_description }}</p>
         </div>
+    {% endif %}
 {% endfor %}
 </div>
 

@@ -1,23 +1,17 @@
 import datetime
 
+from django.utils import timezone
+
 from applications.stats.models import Stats
-from path import COUNTER
-from utils.json_utils import get_json, save_data
 
 
-def visits_counter(path):
-    # counts = get_json(COUNTER)
-    today = str(datetime.date.today())
-
-    visit = Stats(url=path,date=today)
+def visits_counter(request):
+    today = str(timezone.now())
+    name = ""
+    if "name" in request.session:
+        name = request.session["name"]
+    visit = Stats(url=request.path, date=today, method=request.method, user=name)
     visit.save()
-
-    # if path not in counts:
-    #     counts[path] = {}
-    # if today not in counts[path]:
-    #     counts[path][today] = 0
-    # counts[path][today] += 1
-    # save_data(COUNTER, counts)
 
 
 def stats_calculating(page, start_day, days):
@@ -38,6 +32,6 @@ def count_stats(view):
                 response = super().dispatch(*args, **kwargs)
                 return response
             finally:
-                visits_counter(self.request.path)
+                visits_counter(self.request)
 
     return ViewWithStats

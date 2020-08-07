@@ -4,5 +4,10 @@ from django.db import models
 
 
 class Stats(models.Model):
-    url = models.TextField()
-    date = models.DateField()
+    url = models.URLField(null=True, blank=True)
+    date = models.DateTimeField(null=True, blank=True)
+    method = models.TextField(null=True, blank=True)
+    user = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["pk"]

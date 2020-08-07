@@ -5,25 +5,39 @@ Statistics
 {% endblock %}
 
 {% block body %}
-<h1 style = "text-align:center">Statistics</h1>
-{% if theme.background_color == "black" %}<table bgcolor="black" align="center" width="50%" cellspacing="0" border="1">
+<style>
+    .table-title{
+    font-size:30px;
+    }
+    td.tag{
+    border-bottom:1px solid;
+    }
+
+</style>
+<h1 style = "text-align:center;margin-bottom:50px;">Statistics</h1>
+<form method="post" style="margin-bottom:30px;">
+    <button formaction="{% url 'stats:reset' %}" type="submit">Reset</button>
+</form>
+<form  method="post">
+    {{ form }}
+    <button type="submit">Filter</button>
+</form>
+{% if theme.background_color == "black" %}<table bgcolor="black" width="50%" cellspacing="0" border="0">
     {% else %}
- <table bgcolor="#B5FBDD" align="center" width="50%" cellspacing="0" border="1">
-     {% endif %}
-    <tr>
-        <td>Page</td>
-        <td>Today</td>
-        <td>Yesterday</td>
-        <td>Week</td>
-        <td>Month</td>
+ <table width="50%" cellspacing="0" border="0">
+  {% endif %}
+    <tr class="table-title" >
+        <td class="tag page">Page</td>
+        <td class="tag date" >Date</td>
+        <td class="tag method">Method</td>
+        <td class="tag user">User</td>
     </tr>
     {% for item in stats %}
         <tr>
-            <td>{{ item.page }}</td>
-            <td>{{ item.today }}</td>
-            <td>{{ item.yesterday }}</td>
-            <td>{{ item.week }}</td>
-            <td>{{ item.month }}</td>
+            <td>{{ item.url }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.method }}</td>
+            <td>{{ item.user }}</td>
         </tr>
     {% endfor %}
 </table>
