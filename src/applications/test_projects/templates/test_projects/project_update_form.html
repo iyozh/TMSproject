@@ -1,0 +1,16 @@
+{% extends "_base.html" %}
+
+{% block title %}
+{{ object.name  }} updating
+{% endblock %}
+
+
+{% block body %}
+<h1>Project Editing</h1>
+
+<form method="post">
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+</form>
+
+{% endblock %}

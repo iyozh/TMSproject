@@ -19,22 +19,15 @@ Test Projects
 </style>
 <hr><h1 style="text-align:center">All Projects</h1><hr>
 <div class="container">
-{% for item in projects %}
-    {% if item.visible %}
-    <div class = "project"><h2><a href = "{% url 'test_projects:c_project' item.pk %}">{{ item.project_name }}</a></h2>
+{% for item in object_list %}
+    <div class = "project"><h2><a href = "{% url 'test_projects:c_project' item.pk %}">{{ item.name }}</a></h2>
     <p>{{ item.started }} - {{ item.ended }}</p>
-    <p>{{ item.project_description }}</p>
+    <p>{{ item.description }}</p>
         </div>
-    {% endif %}
 {% endfor %}
 </div>
 
-<hr><h1 style="text-align:center">Projects Adding</h1><hr>
-<h2>Enter the data</h2>
-   <form method = "post">
-      {{ form.as_p }}
+<hr><a href="{% url 'test_projects:add' %}"><h1 style="text-align:center;color:black;">Projects Adding</h1></a><hr>
 
-    <button type="submit" formaction="{% url 'test_projects:t_projects' %}">Add</button>
-   </form>
 
 {% endblock %}

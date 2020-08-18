@@ -1,26 +1,20 @@
 {% extends "_base.html" %}
 
 {% block title %}
-{{ certain_project.project_name }}
+{{ certain_project.name }}
 {% endblock %}
 
 {% block body %}
 <a href = "{% url 'test_projects:t_projects' %}">All Projects</a>
 <hr>
-<h2>{{ certain_project.project_name }}</h2>
-<p>{{ certain_project.started }} - {{ certain_project.ended }}</p>
-<p>{{ certain_project.project_description }}</p>
+<h2>{{ object.name }}</h2>
+<p>{{ object.started }} - {{ object.ended }}</p>
+<p>{{ object.description }}</p>
 
-   <form method = "post">
-       <button type="submit" formaction="{% url 'test_projects:delete' certain_project.id %}">Delete</button>
+       <a href="{% url 'test_projects:delete' object.id %}"><button >Delete</button></a>
 
-   </form>
-<hr><h1 style = "text-align:center">Project Editing</h1><hr>
-<h2>Enter the data</h2>
-   <form method = "post">
-       {{ form.as_p }}
-    <button type="submit" formaction="{% url 'test_projects:c_project' certain_project.id %}">Save</button>
-   </form>
+<hr><a href="{% url 'test_projects:update' object.id %}"><h1 style="text-align:center;color:black;">Project Editing</h1></a><hr>
+
 
 
 {% endblock %}

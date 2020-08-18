@@ -9,5 +9,3 @@ from applications.test_projects.models import Project
 @admin.register(Project)
 class ProjectAdminModel(ModelAdmin):
     pass
-
-

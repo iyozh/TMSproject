@@ -5,12 +5,14 @@ from django.utils import timezone
 from applications.stats.models import Stats
 
 
-def visits_counter(request):
+def visits_counter(request, code):
     today = str(timezone.now())
     name = ""
     if "name" in request.session:
         name = request.session["name"]
-    visit = Stats(url=request.path, date=today, method=request.method, user=name)
+    visit = Stats(
+        url=request.path, date=today, method=request.method, user=name, code=code
+    )
     visit.save()
 
 
@@ -32,6 +34,6 @@ def count_stats(view):
                 response = super().dispatch(*args, **kwargs)
                 return response
             finally:
-                visits_counter(self.request)
+                visits_counter(self.request, response.status_code)
 
     return ViewWithStats

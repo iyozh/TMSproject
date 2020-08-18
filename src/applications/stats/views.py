@@ -1,47 +1,45 @@
+import datetime
+
 from django import forms
+from django.db.models import Q
 from django.urls import reverse_lazy
-from django.views.generic import FormView, RedirectView, TemplateView
+from django.views.generic import FormView, ListView, RedirectView, TemplateView
 
 from applications.stats.models import Stats
 from utils.stats_utils import count_stats
 
 
-class CheckBoxFilter(forms.Form):
-    all = forms.BooleanField(required=False)
-    get = forms.BooleanField(required=False)
-    post = forms.BooleanField(required=False)
+CHOICES = [('ALL', 'ALL'),
+           ('GET','GET'),
+           ('POST','POST')]
+
+class RadioButtons(forms.Form):
+    filtration = forms.ChoiceField(choices=CHOICES,widget=forms.RadioSelect,required=False)
+
+
 
 
 @count_stats
-class StatsView(FormView):
+class StatsView(ListView):
     template_name = "stats/index.html"
     model = Stats
-    form_class = CheckBoxFilter
-    success_url = reverse_lazy("stats:statistic")
 
-    def get_context_data(self, **kwargs):
 
+    def get_queryset(self):
+        qs = Stats.objects.all()
+
+        for k,v in self.request.GET.items():
+            if v == "ALL":
+                return qs
+            else:
+                qs = qs.filter(method=v.upper())
+
+        return qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super().get_context_data(**kwargs)
-
-        stats = Stats.objects.all().reverse()
-
-        ctx.update({"stats": stats})
-
+        ctx["form"] = RadioButtons(self.request.GET)
         return ctx
-
-    def form_valid(self, form):
-        content = form.cleaned_data
-        dct = {
-            "all": Stats.objects.all(),
-            "get": Stats.objects.filter(method="GET"),
-            "post": Stats.objects.filter(method="POST"),
-        }
-        choice = None
-        for k, v in content.items():
-            if v is True:
-                choice = dct[k]
-
-        return super().form_valid(form)
 
 
 class Reset(RedirectView):
@@ -49,3 +47,4 @@ class Reset(RedirectView):
         Stats.objects.all().delete()
 
         return reverse_lazy("stats:statistic")
+

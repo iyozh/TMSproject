@@ -1,6 +1,5 @@
 from django import forms
-from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import ListView
 
 from applications.test_projects.models import Project
 from utils.stats_utils import count_stats
@@ -14,19 +13,8 @@ class AddingForm(forms.Form):
 
 
 @count_stats
-class TestProjectsView(FormView):
+class TestProjectsView(ListView):
     template_name = "test_projects/projects_template.html"
-    success_url = reverse_lazy("test_projects:t_projects")
-    form_class = AddingForm
+    queryset = Project.objects.filter(visible=True)
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        projects = Project.objects.all()
-        ctx.update({"projects": projects})
 
-        return ctx
-
-    def form_valid(self, form):
-        project = Project(**form.cleaned_data)
-        project.save()
-        return super().form_valid(form)
