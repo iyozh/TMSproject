@@ -37,8 +37,16 @@ class StatsView(ListView):
         return qs
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        stats = Stats.objects.all()
         ctx = super().get_context_data(**kwargs)
         ctx["form"] = RadioButtons(self.request.GET)
+        today = datetime.datetime.now()
+        error_code = Q(code__startswith=4 or 5)
+        m5 = stats.filter(Q(date__gte=today - datetime.timedelta(minutes=5)) & error_code).count()
+        hour = stats.filter(Q(date__gte=today - datetime.timedelta(hours=1)) & error_code).count()
+        day = stats.filter(Q(date__gte=today - datetime.timedelta(days=1)) & error_code).count()
+        week = stats.filter(Q(date__gte=today - datetime.timedelta(days=7)) & error_code).count()
+        ctx.update({"m5":m5,"hour":hour,"day":day,"week":week})
         return ctx
 
 

@@ -6,7 +6,7 @@ from applications.stats.models import Stats
 
 
 def visits_counter(request, code):
-    today = str(timezone.now())
+    today = datetime.datetime.now()
     name = ""
     if "name" in request.session:
         name = request.session["name"]
