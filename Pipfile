@@ -12,6 +12,9 @@ pudb = "*"
 
 [packages]
 django = "*"
+psycopg2 = "*"
+dj-database-url = "*"
+dynaconf = {extras = ["yaml"],version = "*"}
 
 [requires]
 python_version = "3.8"
