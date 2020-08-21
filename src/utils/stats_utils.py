@@ -1,5 +1,6 @@
 import datetime
 
+from delorean import Delorean
 from django.utils import timezone
 
 from applications.stats.models import Stats
@@ -31,9 +32,11 @@ def count_stats(view):
     class ViewWithStats(view):
         def dispatch(self, *args, **kwargs):
             try:
+                status_code = 500
                 response = super().dispatch(*args, **kwargs)
+                status_code = response.status_code
                 return response
             finally:
-                visits_counter(self.request, response.status_code)
+                visits_counter(self.request, status_code)
 
     return ViewWithStats

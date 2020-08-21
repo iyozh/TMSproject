@@ -17,10 +17,10 @@ Statistics
 <h1 style = "text-align:center;margin-bottom:50px;">Statistics</h1>
 <h2>Error Rate</h2>
 <ul>
-    <li>m5:{{ m5 }}</li>
-    <li>Hour:{{ hour }}</li>
-    <li>Day:{{ day }}</li>
-    <li>Week:{{ week }}</li>
+    <li>5m:{{ dashboard.error_rate.m05.value }}</li>
+    <li>15m:{{ dashboard.error_rate.m15.value }}</li>
+    <li>Hour:{{ dashboard.error_rate.m60.value }}</li>
+    <li>Day:{{ dashboard.error_rate.h24.value }}</li>
 </ul>
 
 
