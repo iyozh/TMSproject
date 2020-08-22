@@ -89,7 +89,7 @@ WSGI_APPLICATION = "project.wsgi.application"
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 development_database_url = "postgresql://postgres:1@localhost:5432/tms"
 database_url = os.getenv("DATABASE_URL",development_database_url)
-database_params = dj_database_url.parse(database_url)
+database_params = dj_database_url.parse(development_database_url)
 
 DATABASES = {
     "default":
