@@ -17,6 +17,7 @@ from pathlib import Path
 
 import dj_database_url
 
+from dynaconf import settings as _ds
 BASE_DIR = Path(__file__).parent.parent
 PROJECT_DIR = BASE_DIR / "project"
 REPO_DIR = BASE_DIR.parent
@@ -26,10 +27,10 @@ REPO_DIR = BASE_DIR.parent
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "ic_ov!i8rc*e5&gj3)(m%w1-j61-hq8fibzca5g@lr=m4)a6u&"
+SECRET_KEY = _ds.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 1
+DEBUG = _ds.DEBUG
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "yozhikapp.herokuapp.com"]
 
