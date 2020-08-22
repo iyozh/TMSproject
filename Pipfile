@@ -12,6 +12,11 @@ pudb = "*"
 
 [packages]
 django = "*"
+psycopg2 = "*"
+dj-database-url = "*"
+dynaconf = {extras = ["yaml"],version = "*"}
+delorean = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.8"

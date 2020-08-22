@@ -1,11 +1,12 @@
-from src.utils.file_utils import get_content
-from src.path import PORTFOLIO
-from src.responses import respond_200
-from src.pages.stats import visits_counter
+from django.http import HttpResponse
+
+from path import RESUME_INDEX
+from utils.file_utils import get_content
+from utils.stats_utils import visits_counter
 
 
-def get_portfolio(server, method, path):
-    visits_counter(path)
-    file_name = PORTFOLIO / "aboutme" / "index.html"
+def get_portfolio(request):
+    visits_counter(request.path)
+    file_name = RESUME_INDEX
     content = get_content(file_name)
-    respond_200(server, content, "text/html")
+    return HttpResponse(content)

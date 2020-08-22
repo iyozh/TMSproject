@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+
+{% block title %}
+{{ certain_project.name }}
+{% endblock %}
+
+{% block body %}
+<a href = "{% url 'test_projects:t_projects' %}">All Projects</a>
+<hr>
+<h2>{{ object.name }}</h2>
+<p>{{ object.started }} - {{ object.ended }}</p>
+<p>{{ object.description }}</p>
+
+       <a href="{% url 'test_projects:delete' object.id %}"><button >Delete</button></a>
+
+<hr><a href="{% url 'test_projects:update' object.id %}"><h1 style="text-align:center;color:black;">Project Editing</h1></a><hr>
+
+
+
+{% endblock %}

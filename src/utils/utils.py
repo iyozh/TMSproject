@@ -21,8 +21,8 @@ def linearize_qs(qs: Dict) -> Dict:
     return result
 
 
-def parse_function(server, path):
-    _path, *qs = path.split("?")
+def parse_function(request):
+    _path, *qs = request.path.split("?")
     arguments = {}
 
     if len(qs) != 1:
@@ -40,7 +40,10 @@ def parse_function(server, path):
 
 
 def age_calculating(qs_arguments: Dict):
-    return int(qs_arguments.get("age", 0))
+    age = qs_arguments.get("age")
+    if age is None:
+        return age
+    return int(age)
 
 
 def name_calculating(qs_arguments: Dict):
@@ -52,3 +55,9 @@ def path_calculating(path1):
     if path[-1] == "/":
         path = path[:-1]
     return path
+
+
+def asdict(obj) -> Dict[str, object]:
+    fields = (_f.name for _f in obj._meta.fields)
+    result = {field: getattr(obj, field) for field in fields}
+    return result

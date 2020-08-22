@@ -1,0 +1,17 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Education
+{% endblock %}
+
+{% block theme %}
+background-color:{{theme.background_color}};color:{{theme.text_color}};
+{% endblock %}
+
+{% block body %}
+      EDUCATION:{{edu_info.univer}}<br>
+      Major:{{edu_info.major}}<br>
+      Qualification:{{edu_info.qualification}}<br>
+      Start:{{edu_info.start}}<br>
+      End:{{edu_info.end}}<br>
+{% endblock %}

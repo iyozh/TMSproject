@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Test Projects
+{% endblock %}
+
+{% block body %}
+<style>
+    .container{
+    display:flex;
+    justify-content:space-around;
+    margin-bottom:30px;
+    margin-top:30px;
+    }
+    .project{
+    border:1px solid ;
+    padding:10px;
+    }
+</style>
+<hr><h1 style="text-align:center">All Projects</h1><hr>
+<form method="get">
+    {{ form }}
+    <button type="submit">Search</button>
+</form>
+    {% if not object_list %}
+<div style="text-align:center">
+      <h2>Nothing found☹️  Try again...Or add new project😃️</h2>
+        <h3><a href = "{% url 'test_projects:t_projects' %}">All Projects</a>  |
+            <a href="{% url 'test_projects:add' %}" >Add project</a></h3>
+</div>
+
+    {% else %}
+<div class="container">
+
+        {% for item in object_list %}
+
+            <div class = "project"><h2><a href = "{% url 'test_projects:c_project' item.pk %}">{{ item.name }}</a></h2>
+            <p>{{ item.started }} - {{ item.ended }}</p>
+            <p>{{ item.description }}</p>
+</div>
+
+        {% endfor %}
+    {% endif %}
+</div>
+
+<hr><a href="{% url 'test_projects:add' %}"><h1 style="text-align:center;color:black;">Projects Adding</h1></a><hr>
+
+
+{% endblock %}

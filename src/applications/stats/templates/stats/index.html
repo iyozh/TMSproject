@@ -1,0 +1,71 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Statistics
+{% endblock %}
+
+{% block body %}
+<style>
+    .table-title{
+    font-size:30px;
+    }
+    td.tag{
+    border-bottom:1px solid;
+    }
+
+</style>
+<h1 style = "text-align:center;margin-bottom:50px;">Statistics</h1>
+<h2>Error Rate</h2>
+<ul>
+    <li>5m:{{ dashboard.error_rate.m05.value }}</li>
+    <li>15m:{{ dashboard.error_rate.m15.value }}</li>
+    <li>Hour:{{ dashboard.error_rate.m60.value }}</li>
+    <li>Day:{{ dashboard.error_rate.h24.value }}</li>
+</ul>
+
+
+<form method="post" style="margin-bottom:30px;">
+    <button formaction="{% url 'stats:reset' %}" type="submit">Reset</button>
+</form>
+<!--<form  method="get">-->
+<!--        <input type="radio" id="all" name="filter" value="ALL" >-->
+<!--        <label for="all">ALL</label>-->
+<!--        <input type="radio" id="get" name="filter" value="GET">-->
+<!--        <label for="get">GET</label>-->
+<!--        <input type="radio" id="post" name="filter" value="POST">-->
+<!--        <label for="post">POST</label>-->
+<!--    <button type="submit">Filter</button>-->
+<!--</form>-->
+
+<form method="get">
+    {{ form }}
+    <button type="submit">Filter</button>
+</form>
+{% if theme.background_color == "black" %}<table bgcolor="black" width="50%" cellspacing="0" border="0">
+    {% else %}
+ <table width="50%" cellspacing="0" border="0">
+  {% endif %}
+    <tr class="table-title" >
+        <td class="tag page">Page</td>
+        <td class="tag date" >Date</td>
+        <td class="tag method">Method</td>
+        <td class="tag user">Code</td>
+        <td class="tag user">User</td>
+    </tr>
+
+{% for item in object_list %}
+
+        <tr>
+            <td>{{ item.url }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.method }}</td>
+            <td>{{ item.code }}</td>
+            <td>{{ item.user }}</td>
+        </tr>
+    {% endfor %}
+
+
+
+</table>
+
+{% endblock %}

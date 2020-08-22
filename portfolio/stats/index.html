@@ -1,10 +1,25 @@
 <html>
 <body>
 
-</body>
 <h1 style = "text-align:center">Statistics</h1>
 <table bgcolor="#B5FBDD" align="center" width="50%" cellspacing="0" border="1">
-    {stats}
+    <tr>
+        <td>Page</td>
+        <td>Today</td>
+        <td>Yesterday</td>
+        <td>Week</td>
+        <td>Month</td>
+    </tr>
+    {% for page in stats %}
+        <tr>
+            <td>{{ page }}</td>
+            {% for stat in page %}
+            <td>{{ today }}</td>
+            <td>{{ page.yesterday }}</td>
+            <td>{{ page.week }}</td>
+            <td>{{ page.month }}</td>
+        </tr>
+    {% endfor %}
 </table>
 
 
