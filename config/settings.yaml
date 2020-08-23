@@ -12,8 +12,8 @@ development:
   SECRET_KEY: "1"
   PORT: 8000
   DEBUG: true
-
+  DATABASE_URL: "postgresql://postgres:1@localhost:5432/tms"
 
 heroku:
   ALLOWED_HOSTS:
-    -'yozhikapp.herokuapp.com'
+    -"yozhikapp.herokuapp.com"
