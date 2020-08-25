@@ -1,0 +1,22 @@
+{% extends "_base.html" %}
+
+{% block title %}
+{{ object.user }}
+{% endblock %}
+
+{% block body %}
+<a href = "{% url 'blog:blog' %}">Blog</a>
+<hr>
+<div>
+    <h2>{{ object.user }}</h2>
+<p>{{ object.date }}</p>
+<p>{{ object.content }}</p>
+</div>
+<button><a style="text-align:center;color:black;" href="{% url 'blog:edit' object.pk %}">Edit post</a></button>
+<button><a style="text-align:center;color:black;" href="{% url 'blog:delete' object.pk %}">Delete post</a></button>
+
+
+
+
+
+{% endblock %}
