@@ -6,13 +6,15 @@ from django.utils import timezone
 from applications.stats.models import Stats
 
 
-def visits_counter(request, code):
+def visits_counter(request, code,content_length):
+    one_kb = 2 ** 10
+    size = content_length / one_kb
     today = datetime.datetime.now()
     name = ""
     if "name" in request.session:
         name = request.session["name"]
     visit = Stats(
-        url=request.path, date=today, method=request.method, user=name, code=code
+        url=request.path, date=today, method=request.method, user=name, code=code,size=size
     )
     visit.save()
 
@@ -31,12 +33,16 @@ def stats_calculating(page, start_day, days):
 def count_stats(view):
     class ViewWithStats(view):
         def dispatch(self, *args, **kwargs):
+            content_length = 0
+            status_code = 500
             try:
-                status_code = 500
+
                 response = super().dispatch(*args, **kwargs)
                 status_code = response.status_code
+                response.render()
+                content_length = len(response.content)
                 return response
             finally:
-                visits_counter(self.request, status_code)
+                visits_counter(self.request, status_code,content_length)
 
     return ViewWithStats

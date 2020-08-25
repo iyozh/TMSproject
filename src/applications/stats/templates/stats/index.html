@@ -17,12 +17,26 @@ Statistics
 <h1 style = "text-align:center;margin-bottom:50px;">Statistics</h1>
 <h2>Error Rate</h2>
 <ul>
-    <li>5m:{{ dashboard.error_rate.m05.value }}</li>
-    <li>15m:{{ dashboard.error_rate.m15.value }}</li>
-    <li>Hour:{{ dashboard.error_rate.m60.value }}</li>
-    <li>Day:{{ dashboard.error_rate.h24.value }}</li>
+    <li>5m:{{ dashboard.error_rate.m05.count }}</li>
+    <li>15m:{{ dashboard.error_rate.m15.count }}</li>
+    <li>Hour:{{ dashboard.error_rate.m60.count }}</li>
+    <li>Day:{{ dashboard.error_rate.h24.count }}</li>
 </ul>
-
+<h2>Traffic</h2>
+<ul>
+    <li>5m:{{ dashboard.error_rate.m05.avg_value.size__avg|floatformat:-0 }} KB
+    ({{ dashboard.error_rate.m05.max_value.size__max|floatformat:-0 }})
+    </li>
+    <li>15m:{{ dashboard.error_rate.m15.avg_value.size__avg|floatformat:-0 }} KB
+    ({{ dashboard.error_rate.m05.max_value.size__max|floatformat:-0 }})
+    </li>
+    <li>Hour:{{ dashboard.error_rate.m60.avg_value.size__avg|floatformat:-0 }} KB
+    ({{ dashboard.error_rate.m05.max_value.size__max|floatformat:-0 }})
+    </li>
+    <li>Day:{{ dashboard.error_rate.h24.avg_value.size__avg|floatformat:-0 }} KB
+    ({{ dashboard.error_rate.m05.max_value.size__max|floatformat:-0 }})
+    </li>
+</ul>
 
 <form method="post" style="margin-bottom:30px;">
     <button formaction="{% url 'stats:reset' %}" type="submit">Reset</button>
@@ -50,6 +64,7 @@ Statistics
         <td class="tag date" >Date</td>
         <td class="tag method">Method</td>
         <td class="tag user">Code</td>
+        <td class="tag user">Size</td>
         <td class="tag user">User</td>
     </tr>
 
@@ -60,6 +75,7 @@ Statistics
             <td>{{ item.date }}</td>
             <td>{{ item.method }}</td>
             <td>{{ item.code }}</td>
+            <td>{{ item.size|floatformat:-0 }} KB</td>
             <td>{{ item.user }}</td>
         </tr>
     {% endfor %}

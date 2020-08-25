@@ -38,4 +38,9 @@ sh:
 	${PY} src/manage.py shell
 
 
+.PHONY: truncate
+truncate:
+	${PY} src/manage.py truncatesessions
+
+
 
