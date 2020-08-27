@@ -41,16 +41,6 @@ Statistics
 <form method="post" style="margin-bottom:30px;">
     <button formaction="{% url 'stats:reset' %}" type="submit">Reset</button>
 </form>
-<!--<form  method="get">-->
-<!--        <input type="radio" id="all" name="filter" value="ALL" >-->
-<!--        <label for="all">ALL</label>-->
-<!--        <input type="radio" id="get" name="filter" value="GET">-->
-<!--        <label for="get">GET</label>-->
-<!--        <input type="radio" id="post" name="filter" value="POST">-->
-<!--        <label for="post">POST</label>-->
-<!--    <button type="submit">Filter</button>-->
-<!--</form>-->
-
 <form method="get">
     {{ form }}
     <button type="submit">Filter</button>
@@ -75,7 +65,7 @@ Statistics
             <td>{{ item.date }}</td>
             <td>{{ item.method }}</td>
             <td>{{ item.code }}</td>
-            <td>{{ item.size|floatformat:-0 }} KB</td>
+            <td>{{ item.size|floatformat:+2 }} KB</td>
             <td>{{ item.user }}</td>
         </tr>
     {% endfor %}

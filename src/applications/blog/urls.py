@@ -4,7 +4,7 @@ from django.urls import path
 from applications.blog.apps import BlogConfig
 from applications.blog.views import BlogView, AddPostView
 from applications.blog.views.delete import DeletePostView
-from applications.blog.views.edit import EditPostView
+from applications.blog.views.update import EditPostView
 from applications.blog.views.post import PostView
 
 app_name = BlogConfig.label

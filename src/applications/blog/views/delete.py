@@ -7,3 +7,4 @@ from applications.blog.models import Post
 class DeletePostView(DeleteView):
     success_url = reverse_lazy("blog:blog")
     model = Post
+    http_method_names = ["post"]
