@@ -1,9 +1,6 @@
-import datetime
-
 from django import forms
-from django.db.models import Q
 from django.urls import reverse_lazy
-from django.views.generic import FormView, ListView, RedirectView, TemplateView
+from django.views.generic import ListView, RedirectView
 
 from applications.stats.models import Stats
 from utils.stats_utils import count_stats

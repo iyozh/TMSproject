@@ -1,0 +1,101 @@
+{% extends "_base.html" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block body %}
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+.container {
+    max-width: 960px;
+    margin: 50px auto;
+    padding: 0 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+}
+.post h1 {
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size:24px;
+}
+.post-meta {
+    color: #606060;
+    margin-top:15px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+}
+time,
+.author {
+    padding-right: 26px;
+    position: relative;
+}
+time:after,
+.author:after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #666;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+p {
+    line-height: 1.5;
+    margin-bottom: 1em;
+}
+@media (min-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+    .container {
+        padding: 0 45px;
+    }
+    .post-image img {
+        float: right;
+        width: 300px;
+        margin: 0 0 20px 20px;
+    }
+    .post-header {
+        padding-left: 26px;
+        border-left: 4px solid #D8D8D8;
+        margin-left: -30px;
+    }
+}
+.add_post textarea {
+    font-size: calc(var(--font-size) * 1.5);
+}
+.add_post {
+    position:relative;
+}
+
+</style>
+<form class="add_post" method="post" action="{% url 'blog:add' %}" >
+{{ form }}
+    <button style="text-align:center;color:black;cursor:pointer;position:absolute;background: transparent;
+    border: none !important;
+    font-size:0;"><img style="width:40px;height:40px;" src="/img/social items/post3.png"></button>
+    </form>
+   <div class="container">
+       {% for post in object_list %}
+    <div class="post">
+        <div class="post-content">
+            <div class="post-header">
+                <h1>{{ post.content|truncatechars:130 }}</h1><a href="{% url 'blog:post' post.pk %}">Read more</a>
+                <div class="post-meta">
+                    <time>{{ post.date }}</time>
+                    <span class="author">{{ post.user }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+       {% endfor %}
+</div>
+
+{% endblock %}
+

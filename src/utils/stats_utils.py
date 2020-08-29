@@ -1,14 +1,13 @@
 import datetime
 
-from delorean import Delorean
-from django.utils import timezone
+from django.template.response import TemplateResponse
 
 from applications.stats.models import Stats
 
 
 def visits_counter(request, code,content_length):
     one_kb = 2 ** 10
-    size = content_length / one_kb
+    size = round(content_length / one_kb,1)
     today = datetime.datetime.now()
     name = ""
     if "name" in request.session:
@@ -33,14 +32,14 @@ def stats_calculating(page, start_day, days):
 def count_stats(view):
     class ViewWithStats(view):
         def dispatch(self, *args, **kwargs):
-            content_length = 0
             status_code = 500
+            content_length = 0
             try:
-
                 response = super().dispatch(*args, **kwargs)
                 status_code = response.status_code
-                response.render()
-                content_length = len(response.content)
+                if isinstance(response, TemplateResponse):
+                    response.render()
+                content_length = len(bytes(response.content))
                 return response
             finally:
                 visits_counter(self.request, status_code,content_length)
