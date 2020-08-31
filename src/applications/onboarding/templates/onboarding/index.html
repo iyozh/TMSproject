@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+
+{% block title %}
+My profile
+{% endblock %}
+
+{% block theme %}
+background-color:{{theme.background_color}};color:{{theme.text_color}};
+{% endblock %}
+
+{% block body %}
+
+{% if object %}
+<h1>My profile</h1>
+
+<h2 style="color:red">Name: {{ object.display_name }}<br>
+Birth: {{ object.birth_date }}</h2>
+
+<form method="post" action="{% url 'onboarding:update' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+{% endif %}
+
+{% endblock %}

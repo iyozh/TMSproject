@@ -6,7 +6,6 @@ from applications.blog.models import Post
 
 
 class UpdatePostForm(forms.ModelForm):
-
     class Meta:
         fields = [Post.content.field.name]
         labels = {Post.content.field.name: "Edit your post"}
@@ -16,7 +15,10 @@ class UpdatePostForm(forms.ModelForm):
         }
 
 
-class PostView(FormMixin,DetailView):
+class PostView(FormMixin, DetailView):
     template_name = "blog/post.html"
     model = Post
     form_class = UpdatePostForm
+
+    def get_initial(self):
+        return {Post.content.field.name: self.object.content}

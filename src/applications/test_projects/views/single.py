@@ -14,4 +14,3 @@ class EditingForm(forms.Form):
 class ProjectPageView(DetailView):
     template_name = "test_projects/c_project.html"
     model = Project
-

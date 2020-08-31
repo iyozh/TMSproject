@@ -6,22 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('blog', '0001_initial'),
+        ("blog", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='post',
-            options={'verbose_name_plural': 'post'},
+            name="post", options={"verbose_name_plural": "post"},
         ),
         migrations.AddField(
-            model_name='post',
-            name='title',
+            model_name="post",
+            name="title",
             field=models.TextField(blank=True, max_length=70, null=True),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='content',
+            model_name="post",
+            name="content",
             field=models.TextField(blank=True, max_length=140, null=True),
         ),
     ]

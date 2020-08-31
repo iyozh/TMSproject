@@ -32,8 +32,8 @@ urlpatterns = [
     path("education/", include("applications.education.urls")),
     path("test_projects/", include("applications.test_projects.urls")),
     path("blog/", include("applications.blog.urls")),
+    path("profile/", include("applications.onboarding.urls")),
     re_path("img/(?P<path_to_file>.+)$", img_handler),
     re_path("css/(?P<path_to_file>.+)$", css_handler),
     re_path(".*night_mode", NightModeView.as_view(), name="night_mode"),
-
 ]

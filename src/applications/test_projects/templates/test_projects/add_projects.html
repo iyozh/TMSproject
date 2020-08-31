@@ -8,6 +8,7 @@ Adding Page
 
 <h2>Enter the data</h2>
    <form method = "post">
+           {% csrf_token %}
       {{ form.as_p }}
 
     <button type="submit" formaction="{% url 'test_projects:add' %}">Add</button>

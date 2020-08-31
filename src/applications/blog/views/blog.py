@@ -12,8 +12,11 @@ class PostForm(forms.ModelForm):
         labels = {Post.content.field.name: "Say something..."}
         model = Post
         widgets = {
-            Post.content.field.name: forms.Textarea(attrs={"cols": 70, "rows": 2}),
+            Post.content.field.name: forms.Textarea(
+                attrs={"cols": 70, "rows": 2, "required": True}
+            ),
         }
+
 
 @count_stats
 class BlogView(FormMixin, ListView):

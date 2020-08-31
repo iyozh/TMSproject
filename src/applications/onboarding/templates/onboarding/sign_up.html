@@ -1,17 +1,13 @@
 {% extends "_base.html" %}
 
 {% block title %}
-{{ object.name  }} updating
+Signed Up
 {% endblock %}
 
-
 {% block body %}
-<h1>Project Editing</h1>
-
 <form method="post">
-        {% csrf_token %}
+    {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Save">
+    <button> Sign Up</button>
 </form>
-
 {% endblock %}

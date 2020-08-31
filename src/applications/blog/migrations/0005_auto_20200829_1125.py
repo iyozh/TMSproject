@@ -6,17 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('blog', '0004_auto_20200826_2136'),
+        ("blog", "0004_auto_20200826_2136"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='post',
-            options={'ordering': ['-date'], 'verbose_name_plural': 'post'},
+            name="post", options={"ordering": ["-date"], "verbose_name_plural": "post"},
         ),
         migrations.AlterField(
-            model_name='post',
-            name='user',
-            field=models.TextField(blank=True, default='User', null=True),
+            model_name="post",
+            name="user",
+            field=models.TextField(blank=True, default="User", null=True),
         ),
     ]

@@ -9,4 +9,3 @@ class EditPostView(UpdateView):
     model = Post
     form_class = UpdatePostForm
     http_method_names = ["post"]
-

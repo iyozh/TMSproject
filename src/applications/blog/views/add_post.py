@@ -13,4 +13,4 @@ class AddPostView(CreateView):
     http_method_names = ["post"]
 
     def get_success_url(self):
-        return reverse_lazy('blog:blog')
+        return reverse_lazy("blog:blog")
