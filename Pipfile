@@ -9,7 +9,6 @@ ipython = "*"
 isort = "*"
 black = "==19.10b0"
 pudb = "*"
-pillow = "*"
 
 [packages]
 django = "*"
@@ -18,6 +17,7 @@ dynaconf = {extras = ["yaml"], version = "*"}
 delorean = "*"
 pandas = "*"
 psycopg2-binary = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.8"
