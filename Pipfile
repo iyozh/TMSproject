@@ -9,6 +9,7 @@ ipython = "*"
 isort = "*"
 black = "==19.10b0"
 pudb = "*"
+pillow = "*"
 
 [packages]
 django = "*"

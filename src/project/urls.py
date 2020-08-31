@@ -13,11 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
-
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
 
+from project import settings
 from utils.file_utils import css_handler, img_handler
 from utils.theme_utils import NightModeView
 
@@ -33,7 +33,7 @@ urlpatterns = [
     path("test_projects/", include("applications.test_projects.urls")),
     path("blog/", include("applications.blog.urls")),
     path("profile/", include("applications.onboarding.urls")),
-    re_path("img/(?P<path_to_file>.+)$", img_handler),
+    re_path("media/(?P<path_to_file>.+)$", img_handler),
     re_path("css/(?P<path_to_file>.+)$", css_handler),
-    re_path(".*night_mode", NightModeView.as_view(), name="night_mode"),
+    re_path(".*night_mode", NightModeView.as_view(), name="night_mode")
 ]

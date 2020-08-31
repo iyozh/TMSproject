@@ -4,6 +4,7 @@ from django.http import Http404, HttpResponse
 
 from errors import NotFound
 from path import PORTFOLIO
+from project import settings
 
 
 def get_picture(file_name: Path):
@@ -28,7 +29,7 @@ def get_content(file_name: Path):
 
 def img_handler(request, **kw):
     path_to_file = kw["path_to_file"]
-    image_dir = PORTFOLIO / "img"
+    image_dir = settings.BASE_DIR / "media"
     real_image = image_dir / path_to_file
 
     if not real_image.is_file():

@@ -11,8 +11,8 @@ background-color:{{theme.background_color}};color:{{theme.text_color}};
 {% block body %}
 
 {% if object %}
-<h1>My profile</h1>
-
+<h1>My profile</h1><br>
+Avatar: <img style="vertical-align: middle;width: 50px;height: 50px;border-radius: 50%;border:1px solid grey" src="{{ object.avatar.url }}" ><br>
 <h2 style="color:red">Name: {{ object.display_name }}<br>
 Birth: {{ object.birth_date }}</h2>
 
