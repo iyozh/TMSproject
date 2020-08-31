@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+{% block title %} Sign In {% endblock %}
+
+{% block body %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+
+<p>Your account does not have sufficient rights to access</p>
+    {% else %}
+<h2>Please,login to see this page</h2>
+    {% endif %}
+{% endif %}
+
+ {% if not user.is_authenticated %}
+        <article>
+            <form method="post">
+                {{ form.as_p }}
+                <button type="submit" class="button">Sign In</button>
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ next }}">
+            </form>
+        </article>
+    {% endif %}
+
+
+{% endblock %}

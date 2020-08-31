@@ -39,9 +39,11 @@ Statistics
 </ul>
 
 <form method="post" style="margin-bottom:30px;">
+        {% csrf_token %}
     <button formaction="{% url 'stats:reset' %}" type="submit">Reset</button>
 </form>
 <form method="get">
+    {% csrf_token %}
     {{ form }}
     <button type="submit">Filter</button>
 </form>

@@ -14,7 +14,8 @@
 
 
 <form method="post">
-{{form.as_p}}
+    {% csrf_token %}
+    {{form.as_p}}
     <button type="submit">Send</button>
 </form>
 {% endblock %}

@@ -5,8 +5,10 @@ from applications.test_projects.views import (
     AddProjectView,
     DeleteProjectView,
     ProjectPageView,
-    TestProjectsView, UpdateProjectView,
+    TestProjectsView,
+    UpdateProjectView,
 )
+
 app_name = TestProjectsConfig.label
 
 urlpatterns = [

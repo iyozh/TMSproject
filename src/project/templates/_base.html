@@ -17,6 +17,7 @@
 <div>
     <div style = "text-align:center">
   <form  method="post" action="{% url 'night_mode' %}">
+      {% csrf_token %}
           <button type="submit" name="theme">CHANGE MODE</button>
     </form>
     </div>
@@ -33,6 +34,13 @@
         <li><a href = "{% url 'blog:blog' %}">Blog</a></li>
     </ul>
 </div>
+{% if not user.is_authenticated %}
+<button style="position:absolute;top:0px;right:100px;"><a href="{% url 'onboarding:sign-in' %}">Sign In</a></button>
+<button style="position:absolute;top:0px;right:30px;"><a href="{% url 'onboarding:sign-up' %}">Sign Up</a></button>
+{% else %}
+
+    <button style="position:absolute;top:0px;right:30px;"><a href="{% url 'onboarding:sign-out' %}">Sign Out</a></button>
+{% endif %}
 {% block body %}SMTH{% endblock %}
 </body>
 </html>

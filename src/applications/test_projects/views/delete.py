@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import RedirectView, DeleteView
+from django.views.generic import DeleteView, RedirectView
 
 from applications.test_projects.mixins.single_obj import SingleObject
 from applications.test_projects.models import Project

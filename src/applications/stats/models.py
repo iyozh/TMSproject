@@ -1,10 +1,11 @@
 import datetime
 from typing import NamedTuple, Optional
 
-from django.db import models
 from delorean import Delorean
+from django.db import models
+
 # Create your models here.
-from django.db.models import Q, Avg, Max, Min
+from django.db.models import Avg, Max, Min, Q
 from pandas import DataFrame
 
 from utils.utils import asdict
@@ -28,6 +29,7 @@ class Dashboard(NamedTuple):
     error_rate: Intervals
     traffic: Intervals
 
+
 class Stats(models.Model):
     url = models.URLField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
@@ -47,17 +49,24 @@ class Stats(models.Model):
         params = {}
         dimensions = {"error_rate": "code", "traffic": "size"}
 
-        for measure_attr, minutes in zip(Intervals.__annotations__, (5, 15, 60, 60 * 24)):
+        for measure_attr, minutes in zip(
+            Intervals.__annotations__, (5, 15, 60, 60 * 24)
+        ):
             delta = datetime.timedelta(minutes=minutes)
-            time = (now - delta)
+            time = now - delta
 
             for dimension_attr, dimension in dimensions.items():
                 count = stats.filter(Q(date__gte=time) & Q(error_code)).count()
-                avg_value = stats.filter(Q(date__gte=time)).aggregate(Avg('size'))
-                min_value = stats.filter(Q(date__gte=time)).aggregate(Min('size'))
-                max_value = stats.filter(Q(date__gte=time)).aggregate(Max('size'))
+                avg_value = stats.filter(Q(date__gte=time)).aggregate(Avg("size"))
+                min_value = stats.filter(Q(date__gte=time)).aggregate(Min("size"))
+                max_value = stats.filter(Q(date__gte=time)).aggregate(Max("size"))
 
-                metric = Value(count=count, avg_value=avg_value, min_value=min_value, max_value=max_value)
+                metric = Value(
+                    count=count,
+                    avg_value=avg_value,
+                    min_value=min_value,
+                    max_value=max_value,
+                )
                 params.setdefault(dimension_attr, {})[measure_attr] = metric
 
         dashboard = Dashboard(**params)

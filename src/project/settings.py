@@ -16,8 +16,9 @@ import os
 from pathlib import Path
 
 import dj_database_url
-
+from django.urls import reverse_lazy
 from dynaconf import settings as _ds
+
 BASE_DIR = Path(__file__).parent.parent
 PROJECT_DIR = BASE_DIR / "project"
 REPO_DIR = BASE_DIR.parent
@@ -52,14 +53,15 @@ INSTALLED_APPS = [
     "applications.stats.apps.StatsConfig",
     "applications.education.apps.EducationConfig",
     "applications.test_projects.apps.TestProjectsConfig",
-    "applications.blog.apps.BlogConfig"
+    "applications.blog.apps.BlogConfig",
+    "applications.onboarding.apps.OnboardingConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -90,12 +92,11 @@ WSGI_APPLICATION = "project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 development_database_url = _ds.DATABASE_URL
-database_url = os.getenv("DATABASE_URL",development_database_url)
+database_url = os.getenv("DATABASE_URL", development_database_url)
 database_params = dj_database_url.parse(database_url)
 
 DATABASES = {
-    "default":
-        database_params,
+    "default": database_params,
 }
 
 
@@ -130,3 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = "/static/"
+
+LOGIN_URL = reverse_lazy("onboarding:sign-in")
+
+LOGIN_REDIRECT_URL = reverse_lazy("main_page:main")

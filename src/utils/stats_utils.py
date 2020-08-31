@@ -5,15 +5,20 @@ from django.template.response import TemplateResponse
 from applications.stats.models import Stats
 
 
-def visits_counter(request, code,content_length):
+def visits_counter(request, code, content_length):
     one_kb = 2 ** 10
-    size = round(content_length / one_kb,1)
+    size = content_length / one_kb
     today = datetime.datetime.now()
     name = ""
     if "name" in request.session:
         name = request.session["name"]
     visit = Stats(
-        url=request.path, date=today, method=request.method, user=name, code=code,size=size
+        url=request.path,
+        date=today,
+        method=request.method,
+        user=name,
+        code=code,
+        size=size,
     )
     visit.save()
 
@@ -39,9 +44,9 @@ def count_stats(view):
                 status_code = response.status_code
                 if isinstance(response, TemplateResponse):
                     response.render()
-                content_length = len(bytes(response.content))
+                content_length = len(bytes(response))
                 return response
             finally:
-                visits_counter(self.request, status_code,content_length)
+                visits_counter(self.request, status_code, content_length)
 
     return ViewWithStats
