@@ -1,22 +1,17 @@
 {% extends "_base.html" %}
 
+{% load static %}
+
 {% block title %}
 Test Projects
 {% endblock %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'test_projects/all.css' %}">
+{% endblock %}
+
 {% block body %}
-<style>
-    .container{
-    display:flex;
-    justify-content:space-around;
-    margin-bottom:30px;
-    margin-top:30px;
-    }
-    .project{
-    border:1px solid ;
-    padding:10px;
-    }
-</style>
+
 <hr><h1 style="text-align:center">All Projects</h1><hr>
 <form method="get">
     {{ form }}

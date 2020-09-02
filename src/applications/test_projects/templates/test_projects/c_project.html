@@ -1,7 +1,13 @@
 {% extends "_base.html" %}
 
+{% load static %}
+
 {% block title %}
 {{ certain_project.name }}
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'test_projects/single.css' %}">
 {% endblock %}
 
 {% block body %}
@@ -13,7 +19,7 @@
 
        <a href="{% url 'test_projects:delete' object.id %}"><button >Delete</button></a>
 
-<hr><a href="{% url 'test_projects:update' object.id %}"><h1 style="text-align:center;color:black;">Project Editing</h1></a><hr>
+<hr><a href="{% url 'test_projects:update' object.id %}"><h1 class="editing-title">Project Editing</h1></a><hr>
 
 
 

@@ -47,3 +47,10 @@ truncate:
 static:
 	${PY} src/manage.py collectstatic --no-input
 
+.PHONY: wipe
+wipe: wipe-static
+
+
+.PHONY: wipe-static
+wipe-static:
+	rd /s /q "${HERE}/.static/"

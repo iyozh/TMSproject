@@ -1,0 +1,14 @@
+.table-title{
+    font-size:30px;
+}
+td.tag{
+    border-bottom:1px solid;
+}
+.page-title{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.reset-stats{
+    margin-bottom:30px;
+}

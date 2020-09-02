@@ -1,23 +1,18 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}BASE{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
     {% block head %}
     {% endblock %}
 </head>
 <body style ="background-color:{{theme.background_color}};color:{{theme.text_color}};">
-<style>
-    a{
-    text-decoration:none;
-    }
-    a:hover {
-    text-decoration:underline;
-    }
 
-</style>
 <div>
-    <div style = "text-align:center">
+    <div class="night-mode" >
   <form  method="post" action="{% url 'night_mode' %}">
       {% csrf_token %}
           <button type="submit" name="theme">CHANGE MODE</button>
@@ -37,13 +32,13 @@
     </ul>
 </div>
 {% if not user.is_authenticated %}
-<button style="position:absolute;top:0px;right:100px;"><a href="{% url 'onboarding:sign-in' %}">Sign In</a></button>
-<button style="position:absolute;top:0px;right:30px;"><a href="{% url 'onboarding:sign-up' %}">Sign Up</a></button>
+<button class="sign-in" ><a href="{% url 'onboarding:sign-in' %}">Sign In</a></button>
+<button class="sign-up"><a href="{% url 'onboarding:sign-up' %}">Sign Up</a></button>
 {% else %}
-<div style="position:absolute;top:0px;right:120px;">
-     <img style="vertical-align: middle;width: 50px;height: 50px;border-radius: 50%;border:1px solid grey" src="{{ object.avatar.url }}" >  <a href="{% url 'onboarding:profile' %}">{{ user.username }}</a>
+<div class="user-data">
+     <img class="profile-avatar" src="{{ object.avatar.url }}" >  <a href="{% url 'onboarding:profile' %}">{{ user.username }}</a>
 </div>
-    <button style="position:absolute;top:15px;right:30px;"><a href="{% url 'onboarding:sign-out' %}">Sign Out</a></button>
+    <button class="sign-out"><a href="{% url 'onboarding:sign-out' %}">Sign Out</a></button>
 {% endif %}
 {% block body %}SMTH{% endblock %}
 </body>

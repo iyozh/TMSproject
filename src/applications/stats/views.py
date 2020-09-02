@@ -23,6 +23,8 @@ class StatsView(ListView):
         qs = Stats.objects.all()
 
         for k, v in self.request.GET.items():
+            if k == "csrfmiddlewaretoken":
+                continue
             qs = Stats.objects.all() if v == "ALL" else qs.filter(method=v.upper())
 
         return qs

@@ -1,20 +1,18 @@
 {% extends "_base.html" %}
 
+{% load static %}
+
 {% block title %}
 Statistics
 {% endblock %}
 
-{% block body %}
-<style>
-    .table-title{
-    font-size:30px;
-    }
-    td.tag{
-    border-bottom:1px solid;
-    }
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'stats/stats.css' %}">
+{% endblock %}
 
-</style>
-<h1 style = "text-align:center;margin-bottom:50px;">Statistics</h1>
+{% block body %}
+
+<h1 class="page-title">Statistics</h1>
 <h2>Error Rate</h2>
 <ul>
     <li>5m:{{ dashboard.error_rate.m05.count }}</li>
@@ -38,7 +36,7 @@ Statistics
     </li>
 </ul>
 
-<form method="post" style="margin-bottom:30px;">
+<form class="reset-stats" method="post">
         {% csrf_token %}
     <button formaction="{% url 'stats:reset' %}" type="submit">Reset</button>
 </form>
@@ -68,7 +66,7 @@ Statistics
             <td>{{ item.method }}</td>
             <td>{{ item.code }}</td>
             <td>{{ item.size|floatformat:+2 }} KB</td>
-            <td>{{ item.user }}</td>
+            <td>{{ user.username }}</td>
         </tr>
     {% endfor %}
 
