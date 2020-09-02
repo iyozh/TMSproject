@@ -130,11 +130,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = "/static/"
 
 LOGIN_URL = reverse_lazy("onboarding:sign-in")
 
 LOGIN_REDIRECT_URL = reverse_lazy("main_page:main")
+
+STATIC_URL = "/s/"
+STATICFILES_DIRS = [
+    PROJECT_DIR / "static",
+]
+STATIC_ROOT = REPO_DIR / ".static"
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 MEDIA_URL = '/media/'
 

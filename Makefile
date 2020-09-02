@@ -43,4 +43,7 @@ truncate:
 	${PY} src/manage.py truncatesessions
 
 
+.PHONY: static
+static:
+	${PY} src/manage.py collectstatic --no-input
 

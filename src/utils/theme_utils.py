@@ -1,5 +1,7 @@
 from django.views.generic import RedirectView
 
+from applications.onboarding.views import CurrentUserMixin
+
 
 def change_mode(request):
     switch_color(request)
@@ -22,7 +24,7 @@ def switch_color(request):
 
 def theme_ctx_processor(request):
     theme = get_theme(request)
-    return {"theme": theme}
+    return {"theme": theme,"object":object}
 
 
 class NightModeView(RedirectView):

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}BASE{% endblock %}</title>
+    {% block head %}
+    {% endblock %}
 </head>
 <body style ="background-color:{{theme.background_color}};color:{{theme.text_color}};">
 <style>
@@ -39,7 +41,7 @@
 <button style="position:absolute;top:0px;right:30px;"><a href="{% url 'onboarding:sign-up' %}">Sign Up</a></button>
 {% else %}
 <div style="position:absolute;top:0px;right:120px;">
-     <img style="vertical-align: middle;width: 50px;height: 50px;border-radius: 50%;border:1px solid grey" src="{{ object.avatar.url }}" >  <a href="{% url 'onboarding:profile' %}">{{ object.display_name }}</a>
+     <img style="vertical-align: middle;width: 50px;height: 50px;border-radius: 50%;border:1px solid grey" src="{{ object.avatar.url }}" >  <a href="{% url 'onboarding:profile' %}">{{ user.username }}</a>
 </div>
     <button style="position:absolute;top:15px;right:30px;"><a href="{% url 'onboarding:sign-out' %}">Sign Out</a></button>
 {% endif %}

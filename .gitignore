@@ -1,3 +1,4 @@
+.static/
 **/.secrets.*
 **/db.sqlite3
 data/*.json
