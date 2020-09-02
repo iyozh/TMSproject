@@ -17,3 +17,4 @@ development:
 heroku:
   ALLOWED_HOSTS:
     -"yozhikapp.herokuapp.com"
+  DEBUG: false
