@@ -3,6 +3,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin
 
 from applications.blog.models import Post
+from utils.stats_utils import count_stats
 
 
 class UpdatePostForm(forms.ModelForm):
@@ -15,6 +16,7 @@ class UpdatePostForm(forms.ModelForm):
         }
 
 
+@count_stats
 class PostView(FormMixin, DetailView):
     template_name = "blog/post.html"
     model = Post
