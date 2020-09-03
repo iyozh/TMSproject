@@ -17,6 +17,8 @@ class AddPostView(CreateView):
 
     def form_valid(self, form):
         user_id = form.data["user"]
-        post = Post(profile_id=user_id,content=form.cleaned_data["content"])
-        post.save()
+        form = super().form_valid(form)
+        object = self.object
+        object.user_id = user_id
+        object.save()
         return super().form_valid(form)
