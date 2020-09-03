@@ -19,6 +19,8 @@ pandas = "*"
 psycopg2-binary = "*"
 pillow = "*"
 whitenoise = "*"
+boto3 = "*"
+django-storages = "*"
 
 [requires]
 python_version = "3.8"

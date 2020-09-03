@@ -23,3 +23,4 @@ class BlogView(FormMixin, ListView):
     template_name = "blog/blog.html"
     form_class = PostForm
     model = Post
+

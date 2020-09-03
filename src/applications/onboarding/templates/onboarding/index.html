@@ -18,7 +18,7 @@ background-color:{{theme.background_color}};color:{{theme.text_color}};
 
 {% if object %}
 <h1>My profile</h1><br>
-Avatar: <img class="avatar" src="{{ object.avatar.url }}" ><br>
+Avatar: <img class="avatar" src="{{ object.avatar.original.url }}" ><br>
 <h2 class="display_name">Name: {{ object.display_name }}<br>
 Birth: {{ object.birth_date }}</h2>
 

@@ -24,7 +24,7 @@ def switch_color(request):
 
 def theme_ctx_processor(request):
     theme = get_theme(request)
-    return {"theme": theme,"object":object}
+    return {"theme": theme, "object": object}
 
 
 class NightModeView(RedirectView):

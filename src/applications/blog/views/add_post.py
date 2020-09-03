@@ -14,3 +14,9 @@ class AddPostView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy("blog:blog")
+
+    def form_valid(self, form):
+        user_id = form.data["user"]
+        post = Post(profile_id=user_id,content=form.cleaned_data["content"])
+        post.save()
+        return super().form_valid(form)

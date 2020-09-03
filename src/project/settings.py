@@ -145,6 +145,11 @@ if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+AWS_ACCESS_KEY_ID = _ds.AWS_ACCESS_KEY_ID
+AWS_DEFAULT_ACL = "public-read"
+AWS_LOCATION = "avatars"
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_ADDRESSING_STYLE = "path"
+AWS_S3_REGION_NAME = _ds.AWS_S3_REGION_NAME
+AWS_SECRET_ACCESS_KEY = _ds.AWS_SECRET_ACCESS_KEY
+AWS_STORAGE_BUCKET_NAME = "w1-project"

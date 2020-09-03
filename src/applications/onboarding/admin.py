@@ -4,7 +4,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.admin import ModelAdmin
 
-from applications.onboarding.models import Profile
+from applications.onboarding.models import Avatar, Profile
 
 
 class ProjectAdminForm(forms.ModelForm):
@@ -16,4 +16,9 @@ class ProjectAdminForm(forms.ModelForm):
 
 @admin.register(Profile)
 class ProfileAdminModel(ModelAdmin):
+    pass
+
+
+@admin.register(Avatar)
+class AvatarAdminModel(ModelAdmin):
     pass

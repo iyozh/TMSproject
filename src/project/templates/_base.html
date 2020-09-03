@@ -35,9 +35,17 @@
 <button class="sign-in" ><a href="{% url 'onboarding:sign-in' %}">Sign In</a></button>
 <button class="sign-up"><a href="{% url 'onboarding:sign-up' %}">Sign Up</a></button>
 {% else %}
+
 <div class="user-data">
-     <img class="profile-avatar" src="{{ object.avatar.url }}" >  <a href="{% url 'onboarding:profile' %}">{{ user.username }}</a>
+    {% if user.profile.avatar.original.url %}
+     <img class="profile-avatar" src="{{ user.profile.avatar.original.url }}" >
+    <a href="{% url 'onboarding:profile' %}">{{ user.username }}</a>
+       {% else %}
+    <img class="profile-avatar" src="{% static 'no_avatar.jpg' %}" >
+    <a href="{% url 'onboarding:profile' %}">{{ user.username }}</a>
+    {% endif %}
 </div>
+
     <button class="sign-out"><a href="{% url 'onboarding:sign-out' %}">Sign Out</a></button>
 {% endif %}
 {% block body %}SMTH{% endblock %}

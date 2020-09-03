@@ -46,9 +46,11 @@ class MyProfileView(CurrentUserMixin, FormMixin, LoginRequiredMixin, DetailView)
             Profile.birth_date.field.name: self.object.birth_date,
         }
 
+
 @count_stats
 class SignInView(LoginView):
     template_name = "onboarding/sign_in.html"
+
 
 @count_stats
 class SignOutView(LogoutView):
@@ -62,6 +64,7 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ["username", "email", "password1", "password2"]
+
 
 @count_stats
 class SignUpView(FormView):
@@ -81,6 +84,7 @@ class SignUpView(FormView):
         profile.save()
 
         return super().form_valid(form)
+
 
 @count_stats
 class ProfileUpdateView(CurrentUserMixin, UpdateView):

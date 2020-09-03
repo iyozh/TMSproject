@@ -35,5 +35,5 @@ urlpatterns = [
     path("profile/", include("applications.onboarding.urls")),
     re_path("media/(?P<path_to_file>.+)$", img_handler),
     re_path("css/(?P<path_to_file>.+)$", css_handler),
-    re_path(".*night_mode", NightModeView.as_view(), name="night_mode")
+    re_path(".*night_mode", NightModeView.as_view(), name="night_mode"),
 ]
