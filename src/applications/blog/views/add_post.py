@@ -1,9 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from applications.blog.models import Post
 from applications.blog.views.blog import PostForm
 from utils.stats_utils import count_stats
+
 
 
 @count_stats
@@ -16,8 +18,8 @@ class AddPostView(CreateView):
         return reverse_lazy("blog:blog")
 
     def form_valid(self, form):
-        user_id = form.data["user"]
-        form = super().form_valid(form)
+        new_form = super().form_valid(form)
+        user_id = form.data.get("user")
         object = self.object
         object.user_id = user_id
         object.save()
