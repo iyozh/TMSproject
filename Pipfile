@@ -21,6 +21,7 @@ pillow = "*"
 whitenoise = "*"
 boto3 = "*"
 django-storages = "*"
+sentry-sdk = "*"
 
 [requires]
 python_version = "3.8"

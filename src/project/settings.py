@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from itertools import chain
 from pathlib import Path
@@ -33,6 +37,13 @@ SECRET_KEY = _ds.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = _ds.DEBUG
+
+sentry_sdk.init(
+    dsn=_ds.SENTRY_DSN,
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=True
+)
 
 INTERNAL_IPS = ["127.0.0.1"]
 INTERNAL_HOSTS = ["localhost"]
