@@ -11,9 +11,6 @@ default:
   AWS_STORAGE_BUCKET_NAME: ""
 
 development:
-  ALLOWED_HOSTS:
-    -localhost
-    -127.0.0.1
   AWS_S3_REGION_NAME: "eu-central-1"
   AWS_ACCESS_KEY_ID: "AKIAJX3DIMCUDK7NY3AA"
   AWS_STORAGE_BUCKET_NAME: "w1-project"
@@ -25,7 +22,7 @@ development:
 
 heroku:
   ALLOWED_HOSTS:
-    -"yozhikapp.herokuapp.com"
+    - "yozhikapp.herokuapp.com"
   DEBUG: false
   AWS_S3_REGION_NAME: "eu-central-1"
   AWS_ACCESS_KEY_ID: "AKIAJX3DIMCUDK7NY3AA"
