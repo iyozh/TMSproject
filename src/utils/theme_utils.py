@@ -1,6 +1,5 @@
 from django.views.generic import RedirectView
 
-from applications.onboarding.views import CurrentUserMixin
 
 
 def change_mode(request):

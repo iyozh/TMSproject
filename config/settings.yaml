@@ -4,10 +4,11 @@ default:
   PORT: 0
   DEBUG: false
   DATABASE_URL: ""
+  AWS_S3_AVATARS_LOCATION: ""
   AWS_ACCESS_KEY_ID: ""
   AWS_S3_REGION_NAME: ""
   AWS_SECRET_ACCESS_KEY: ""
-
+  AWS_STORAGE_BUCKET_NAME: ""
 
 development:
   ALLOWED_HOSTS:
@@ -15,6 +16,8 @@ development:
     -127.0.0.1
   AWS_S3_REGION_NAME: "eu-central-1"
   AWS_ACCESS_KEY_ID: "AKIAJX3DIMCUDK7NY3AA"
+  AWS_STORAGE_BUCKET_NAME: "w1-project"
+  AWS_S3_AVATARS_LOCATION: "avatars-dev"
   SECRET_KEY: "1"
   PORT: 8000
   DEBUG: true
@@ -26,3 +29,5 @@ heroku:
   DEBUG: false
   AWS_S3_REGION_NAME: "eu-central-1"
   AWS_ACCESS_KEY_ID: "AKIAJX3DIMCUDK7NY3AA"
+  AWS_STORAGE_BUCKET_NAME: "w1-project"
+  AWS_S3_AVATARS_LOCATION: "avatars-heroku"

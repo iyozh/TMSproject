@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -21,7 +22,7 @@ class Profile(models.Model):
 
 class Avatar(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE,primary_key=True)
-    original = models.FileField(storage=S3Boto3Storage())
+    original = models.FileField(storage=S3Boto3Storage(),upload_to=f"{settings.AWS_S3_AVATARS_LOCATION}")
 
     class Meta:
         verbose_name_plural = "avatar"
