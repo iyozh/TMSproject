@@ -18,7 +18,7 @@ background-color:{{theme.background_color}};color:{{theme.text_color}};
 
 {% if object %}
 <h1>My profile</h1><br>
-{% if object.avatar.original.url %}
+{% if object.avatar.original %}
 Avatar: <img class="avatar" src="{{ object.avatar.original.url }}" ><br>
 {% else %}
 Avatar: <img class="avatar" src="{% static 'no_avatar.jpg' %}" ><br>

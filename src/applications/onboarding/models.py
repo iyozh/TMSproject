@@ -7,6 +7,9 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 User = get_user_model()
 
+def upload_to(instance:"Avatar",filename):
+    return f"{settings.AWS_S3_AVATARS_LOCATION}/avatar_{instance.pk}_{filename}"
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, editable=False)
@@ -22,7 +25,7 @@ class Profile(models.Model):
 
 class Avatar(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE,primary_key=True)
-    original = models.FileField(storage=S3Boto3Storage(),upload_to=f"{settings.AWS_S3_AVATARS_LOCATION}")
+    original = models.FileField(storage=S3Boto3Storage(),upload_to=upload_to,null=True,blank=True)
 
     class Meta:
         verbose_name_plural = "avatar"

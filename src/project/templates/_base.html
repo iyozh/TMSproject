@@ -37,7 +37,7 @@
 {% else %}
 
 <div class="user-data">
-    {% if user.profile.avatar.original.url %}
+    {% if user.profile.avatar.original %}
      <img class="profile-avatar" src="{{ user.profile.avatar.original.url }}" >
     <a href="{% url 'onboarding:profile' %}">{{ user.username }}</a>
        {% else %}
