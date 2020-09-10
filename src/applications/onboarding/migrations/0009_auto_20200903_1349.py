@@ -6,12 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('onboarding', '0008_auto_20200903_1259'),
+        ("onboarding", "0008_auto_20200903_1259"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='avatar',
-            options={'verbose_name_plural': 'avatar'},
+            name="avatar", options={"verbose_name_plural": "avatar"},
         ),
     ]

@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 
 from applications.onboarding.forms import SignUpForm
-from applications.onboarding.models import Profile, Avatar
+from applications.onboarding.models import Avatar, Profile
 from utils.stats_utils import count_stats
 
 
@@ -23,7 +23,7 @@ class SignUpView(FormView):
         login(self.request, user)
         profile = Profile(user=user, display_name=username)
         profile.save()
-        avatar = Avatar(original=None,profile=profile)
+        avatar = Avatar(original=None, profile=profile)
         avatar.save()
 
         return super().form_valid(form)

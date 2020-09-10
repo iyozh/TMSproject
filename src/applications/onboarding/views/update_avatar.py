@@ -6,7 +6,7 @@ from applications.onboarding.mixins import CurrentUserMixin
 from applications.onboarding.models import Avatar
 
 
-class AvatarUpdate(CurrentUserMixin,UpdateView):
+class AvatarUpdate(CurrentUserMixin, UpdateView):
     model = Avatar
     form_class = AvatarForm
     http_method_names = ["post"]

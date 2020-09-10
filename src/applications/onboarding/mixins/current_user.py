@@ -4,6 +4,7 @@ from applications.onboarding.models import Profile
 
 User = get_user_model()
 
+
 class CurrentUserMixin:
     def get_object(self, queryset=None):
 
@@ -26,5 +27,3 @@ class CurrentUserMixin:
         except exc_missing:
             pass
         return avatar
-
-

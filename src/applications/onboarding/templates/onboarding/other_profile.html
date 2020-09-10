@@ -1,0 +1,39 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block title %}
+My profile
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'onboarding/profile.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block theme %}
+background-color:{{theme.background_color}};color:{{theme.text_color}};
+{% endblock %}
+
+{% block body %}
+
+{% if object %}
+<div class="card">
+    {% if object.avatar.original %}
+           <img class="avatar" src="{{ object.avatar.original.url }}" >
+    {% else %}
+            <img class="avatar" src="{% static 'no_avatar.jpg' %}" >
+    {% endif %}
+        <h1>{{ object.display_name }}</h1>
+    {% if object.birth_date %}
+        <p class="title">{{ object.birth_date }}</p>
+    {% endif %}
+        <a href="#"><i class="fa fa-dribbble"></i></a>
+        <a href="#"><i class="fa fa-twitter"></i></a>
+        <a href="#"><i class="fa fa-linkedin"></i></a>
+        <a href="#"><i class="fa fa-facebook"></i></a>
+        <p><button>Contact</button></p>
+</div>
+{% endif %}
+
+{% endblock %}

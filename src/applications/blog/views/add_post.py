@@ -9,9 +9,7 @@ from applications.blog.views.blog import PostForm
 from utils.stats_utils import count_stats
 
 
-
 class MyLoginRequiredMixin(LoginRequiredMixin):
-
     def get_next_url(self):
         return self.request.get_full_path()
 
@@ -19,7 +17,7 @@ class MyLoginRequiredMixin(LoginRequiredMixin):
         next_url = self.get_next_url()
 
         previous_meth = self.request.get_full_path
-        self.request.get_full_path = lambda:next_url
+        self.request.get_full_path = lambda: next_url
 
         try:
             r = super().handle_no_permission()
@@ -29,13 +27,12 @@ class MyLoginRequiredMixin(LoginRequiredMixin):
 
 
 @count_stats
-class AddPostView(MyLoginRequiredMixin,CreateView):
+class AddPostView(MyLoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     http_method_names = ["post"]
     next_url = reverse_lazy("blog:blog")
     success_url = reverse_lazy("blog:blog")
-
 
     def get_next_url(self):
         form = self.form_class(self.request.POST)

@@ -27,5 +27,4 @@ class BlogView(FormMixin, ListView):
 
     def get_initial(self):
         content = self.request.GET.get("content")
-        return {"content":content}
-
+        return {"content": content}

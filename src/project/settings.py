@@ -12,17 +12,15 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from itertools import chain
 from pathlib import Path
 
 import dj_database_url
+import sentry_sdk
 from django.urls import reverse_lazy
 from dynaconf import settings as _ds
+from sentry_sdk.integrations.django import DjangoIntegration
 
 BASE_DIR = Path(__file__).parent.parent
 PROJECT_DIR = BASE_DIR / "project"
@@ -42,13 +40,12 @@ sentry_sdk.init(
     dsn=_ds.SENTRY_DSN,
     integrations=[DjangoIntegration()],
     traces_sample_rate=1.0,
-    send_default_pii=True
+    send_default_pii=True,
 )
 
 INTERNAL_IPS = ["127.0.0.1"]
 INTERNAL_HOSTS = ["localhost"]
 ALLOWED_HOSTS = list(chain(_ds.ALLOWED_HOSTS or [], INTERNAL_IPS, INTERNAL_HOSTS))
-
 
 
 # Application definition

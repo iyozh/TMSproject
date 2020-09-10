@@ -25,6 +25,7 @@ time,
 .author {
     padding-right: 26px;
     position: relative;
+    margin-bottom:50px;
 }
 time:after,
 .author:after {
@@ -79,4 +80,8 @@ p {
 .pen img {
     width:40px;
     height:40px;
+}
+
+.user-link {
+    cursor:pointer;
 }

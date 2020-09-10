@@ -9,7 +9,7 @@ from applications.onboarding.models import User
 
 
 class Post(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField(default=datetime.utcnow, editable=False)
     content = models.TextField(blank=True, null=True)
 

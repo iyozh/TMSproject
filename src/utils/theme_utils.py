@@ -1,7 +1,6 @@
 from django.views.generic import RedirectView
 
 
-
 def change_mode(request):
     switch_color(request)
 
