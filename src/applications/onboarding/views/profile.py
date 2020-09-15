@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
+from django.views.generic.base import View
 from django.views.generic.edit import FormMixin
 
 from applications.onboarding.forms import AvatarForm, ProfileForm
 from applications.onboarding.mixins import CurrentUserMixin
-from applications.onboarding.models import Profile
+from applications.onboarding.models import Avatar, Profile
 from utils.stats_utils import count_stats
 
 

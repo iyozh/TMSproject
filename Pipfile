@@ -22,6 +22,7 @@ whitenoise = "*"
 boto3 = "*"
 django-storages = "*"
 sentry-sdk = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.8"

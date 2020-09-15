@@ -26,7 +26,6 @@ BASE_DIR = Path(__file__).parent.parent
 PROJECT_DIR = BASE_DIR / "project"
 REPO_DIR = BASE_DIR.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -47,7 +46,6 @@ INTERNAL_IPS = ["127.0.0.1"]
 INTERNAL_HOSTS = ["localhost"]
 ALLOWED_HOSTS = list(chain(_ds.ALLOWED_HOSTS or [], INTERNAL_IPS, INTERNAL_HOSTS))
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,6 +55,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework.authtoken",
     "applications.goodbye.apps.GoodbyeConfig",
     "applications.resume.apps.ResumeConfig",
     "applications.projects.apps.ProjectsConfig",
@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "applications.test_projects.apps.TestProjectsConfig",
     "applications.blog.apps.BlogConfig",
     "applications.onboarding.apps.OnboardingConfig",
+    "applications.api.apps.ApiConfig",
 ]
 
 MIDDLEWARE = [
@@ -101,7 +102,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "project.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 development_database_url = _ds.DATABASE_URL
@@ -111,7 +111,6 @@ database_params = dj_database_url.parse(database_url)
 DATABASES = {
     "default": database_params,
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -125,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -138,7 +136,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -156,7 +153,6 @@ STATIC_ROOT = REPO_DIR / ".static"
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-
 AWS_ACCESS_KEY_ID = _ds.AWS_ACCESS_KEY_ID
 AWS_S3_OBJECT_PARAMETERS = {"ACL": "public-read"}
 AWS_QUERYSTRING_AUTH = False
@@ -165,3 +161,9 @@ AWS_S3_ADDRESSING_STYLE = "path"
 AWS_S3_REGION_NAME = _ds.AWS_S3_REGION_NAME
 AWS_SECRET_ACCESS_KEY = _ds.AWS_SECRET_ACCESS_KEY
 AWS_STORAGE_BUCKET_NAME = _ds.AWS_STORAGE_BUCKET_NAME
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication"
+    ]
+}
